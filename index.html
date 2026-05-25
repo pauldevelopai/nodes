@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GROUNDED — newsroom-owned AI nodes</title>
+<meta name="description" content="GROUNDED is a family of small AI tools your newsroom runs, owns, and adapts. Each tool is a Node — install it with one command, and the code is yours to change.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0c0a;--ink2:#16140f;--panel:#1c1a14;--line:#3a352a;
+  --paper:#ede4d3;--paper-dim:#a89e88;--signal:#e8a13a;--signal-deep:#c4761b;--good:#7fae6a;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;--serif:'Newsreader',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--paper);font-family:var(--serif);-webkit-font-smoothing:antialiased;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding:46px 26px 90px}
+
+/* masthead */
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--signal);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--signal);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,161,58,.6)}70%{box-shadow:0 0 0 9px rgba(232,161,58,0)}100%{box-shadow:0 0 0 0 rgba(232,161,58,0)}}
+h1{font-size:46px;font-weight:600;letter-spacing:-.02em;line-height:1.05;max-width:18ch}
+h1 span{font-style:italic;font-weight:400;color:var(--paper-dim)}
+.lede{margin-top:20px;font-size:18px;color:var(--paper-dim);max-width:64ch;border-left:2px solid var(--signal-deep);padding-left:18px}
+.lede b{color:var(--paper);font-weight:600}
+
+.sec-h{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin:56px 0 18px}
+
+/* node cards */
+.node{border:1px solid var(--line);background:var(--ink2);padding:26px 28px;margin-bottom:18px}
+.node h2{font-size:27px;font-weight:600;margin-bottom:4px}
+.node .desc{color:var(--paper-dim);font-size:16px;max-width:70ch;margin-bottom:20px}
+.run-row{display:grid;grid-template-columns:78px 1fr auto;gap:12px;align-items:center;margin-bottom:8px}
+.os{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim)}
+code.cmd{font-family:var(--mono);font-size:13px;color:var(--signal);background:var(--ink);border:1px solid var(--line);padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.copy{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper-dim);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:.15s}
+.copy:hover{color:var(--signal);border-color:var(--signal)}
+.copy.done{color:var(--good);border-color:var(--good)}
+.own{margin-top:18px;font-size:14.5px;color:var(--paper-dim)}
+.own a{color:var(--signal);text-decoration:none;border-bottom:1px dotted var(--signal)}
+.own a:hover{border-bottom-style:solid}
+.node.soon{border-style:dashed;background:transparent}
+.node.soon h2{color:var(--paper-dim)}
+
+/* ownership model */
+.model{border-top:1px solid var(--line);margin-top:56px;padding-top:8px}
+.model h2{font-size:28px;font-weight:600;margin:22px 0 22px;max-width:24ch}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.step{background:var(--ink2);padding:22px 22px 26px}
+.step .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--signal);margin-bottom:10px}
+.step h3{font-size:19px;font-weight:600;margin-bottom:8px}
+.step p{font-size:14.5px;color:var(--paper-dim)}
+.step b{color:var(--paper);font-weight:600}
+
+.foot{margin-top:60px;border-top:1px solid var(--line);padding-top:18px;font-family:var(--mono);font-size:11px;color:var(--paper-dim);line-height:1.9}
+@media(max-width:720px){h1{font-size:34px}.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.os{margin-top:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker"><span class="dot"></span> GROUNDED · newsroom-owned AI</div>
+    <h1>Small AI tools your newsroom <span>runs, owns, and adapts</span></h1>
+    <p class="lede">Each tool here is a <b>Node</b> — a self-contained app that runs on your own
+      computer, on your own data. Install one with a single command. The code is open, so you can
+      open it up, change it, and make it fit how <i>your</i> newsroom actually works.</p>
+  </header>
+
+  <div class="sec-h">The Nodes</div>
+
+  <article class="node">
+    <h2>Audience Signal</h2>
+    <p class="desc">Reads a Word matrix of your published stories and their Facebook reach +
+      engagement, and shows what your audience actually rewards — by beat, format, headline shape
+      and over time. The signal is engagement <i>rate</i>, not raw reach, so boosting and the
+      algorithm don't fool it.</p>
+
+    <div class="run-row">
+      <span class="os">macOS</span>
+      <code class="cmd" id="cmd-mac">curl -fsSL https://nodes.developai.co.za/analytics/mac | bash</code>
+      <button class="copy" data-copy="cmd-mac">copy</button>
+    </div>
+    <div class="run-row">
+      <span class="os">Windows</span>
+      <code class="cmd" id="cmd-win">irm https://nodes.developai.co.za/analytics/windows | iex</code>
+      <button class="copy" data-copy="cmd-win">copy</button>
+    </div>
+
+    <p class="own">Paste it into your computer's built-in terminal — nothing to install by hand.
+      Or <a href="https://github.com/pauldevelopai/node-analytics">get the code on GitHub</a> to
+      fork it and make it your own.</p>
+  </article>
+
+  <article class="node soon">
+    <h2>More Nodes coming</h2>
+    <p class="desc">GROUNDED grows one Node at a time, each built alongside a newsroom around a
+      real need. New tools land here as they're ready.</p>
+  </article>
+
+  <section class="model">
+    <div class="sec-h">How GROUNDED works</div>
+    <h2>You own it. You can change it. It gets better together.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">01 · RUN</div>
+        <h3>One command</h3>
+        <p>Install a Node with a single line in your terminal. No accounts to create, nothing to
+          set up by hand. It runs on your machine, on your data.</p>
+      </div>
+      <div class="step">
+        <div class="n">02 · OWN</div>
+        <h3>Make it yours</h3>
+        <p>The code is open. <b>Download it, edit it, adapt it.</b> Your data and your changes stay
+          yours — a Node keeps working even if Develop AI disappears tomorrow.</p>
+      </div>
+      <div class="step">
+        <div class="n">03 · SHARE BACK</div>
+        <h3>Build on each other</h3>
+        <p>Improvements flow back upstream, and other newsrooms build on them. Each Node grows from
+          <b>real newsroom experience</b> — not a vendor's roadmap.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    GROUNDED — built by Develop AI, with and for African newsrooms.<br>
+    Stuck on setup? Email Paul at Develop AI.
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('button.copy').forEach(b => {
+    b.addEventListener('click', async () => {
+      const text = document.getElementById(b.dataset.copy).textContent.trim();
+      try { await navigator.clipboard.writeText(text); } catch (e) {}
+      b.textContent = 'copied'; b.classList.add('done');
+      setTimeout(() => { b.textContent = 'copy'; b.classList.remove('done'); }, 1300);
+    });
+  });
+</script>
+</body>
+</html>

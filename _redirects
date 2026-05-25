@@ -1,0 +1,10 @@
+# GROUNDED Nodes — install command redirects (Netlify / Cloudflare Pages format)
+#
+# Each Node's install one-liner points at a clean URL here; we redirect to the
+# raw install script in that Node's own repo. curl -fsSL and PowerShell's irm
+# both follow redirects, so a 302 is enough — the script downloads the app itself.
+#
+# Add two lines per new Node.
+
+/analytics/mac      https://raw.githubusercontent.com/pauldevelopai/node-analytics/main/install.sh   302
+/analytics/windows  https://raw.githubusercontent.com/pauldevelopai/node-analytics/main/install.ps1  302
