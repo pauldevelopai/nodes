@@ -3,144 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GROUNDED — newsroom-owned AI nodes</title>
-<meta name="description" content="GROUNDED is a family of small AI tools your newsroom runs, owns, and adapts. Each tool is a Node — install it with one command, and the code is yours to change.">
+<title>Nodes · Grounded: AI Legal</title>
+<meta name="description" content="GROUNDED Nodes — small AI tools your newsroom runs, owns, and adapts. Install one with a single command.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0d0c0a;--ink2:#16140f;--panel:#1c1a14;--line:#3a352a;
-  --paper:#ede4d3;--paper-dim:#a89e88;--signal:#e8a13a;--signal-deep:#c4761b;--good:#7fae6a;
-  --mono:'IBM Plex Mono',ui-monospace,monospace;--serif:'Newsreader',Georgia,serif;
+  --content-bg:#F8FAFC; --card-bg:#FFFFFF; --text-primary:#1A202C; --text-secondary:#718096;
+  --border-color:#E2E8F0; --accent:#3B82F6; --accent-hover:#2563EB; --success:#10B981;
+  --radius:6px; --shadow:0 1px 3px rgba(0,0,0,0.08); --active-bg:#EEF2FF;
+  --code-bg:#1E1E2E; --code-text:#E2E8F0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--ink);color:var(--paper);font-family:var(--serif);-webkit-font-smoothing:antialiased;line-height:1.55}
-.wrap{max-width:1000px;margin:0 auto;padding:46px 26px 90px}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--content-bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 
-/* masthead */
-.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--signal);margin-bottom:14px;display:flex;align-items:center;gap:9px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--signal);animation:pulse 2.4s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,161,58,.6)}70%{box-shadow:0 0 0 9px rgba(232,161,58,0)}100%{box-shadow:0 0 0 0 rgba(232,161,58,0)}}
-h1{font-size:46px;font-weight:600;letter-spacing:-.02em;line-height:1.05;max-width:18ch}
-h1 span{font-style:italic;font-weight:400;color:var(--paper-dim)}
-.lede{margin-top:20px;font-size:18px;color:var(--paper-dim);max-width:64ch;border-left:2px solid var(--signal-deep);padding-left:18px}
-.lede b{color:var(--paper);font-weight:600}
+/* ── Header: replica of the tracker's nav ── */
+header.site{border-bottom:1px solid var(--border-color);background:var(--card-bg);position:sticky;top:0;z-index:10}
+.bar{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{text-decoration:none;color:var(--text-primary);display:flex;flex-direction:column;line-height:1.2}
+.brand b{font-size:20px;font-weight:700;letter-spacing:-0.01em}
+.brand span{font-size:11px;color:var(--text-secondary);font-weight:500}
+nav{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+nav a{padding:8px 12px;border-radius:var(--radius);font-size:14px;font-weight:500;color:var(--text-secondary);text-decoration:none}
+nav a:hover{color:var(--text-primary)}
+nav a.active{font-weight:600;color:var(--text-primary);background:var(--active-bg)}
+nav a.signin{border:1px solid var(--border-color)}
 
-.sec-h{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin:56px 0 18px}
+/* ── Main ── */
+main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 24px}
+.hero h1{font-size:32px;font-weight:700;letter-spacing:-0.02em}
+.hero p{margin-top:10px;font-size:16px;color:var(--text-secondary);max-width:72ch}
+.sec-label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary);margin:34px 0 14px}
 
-/* node cards */
-.node{border:1px solid var(--line);background:var(--ink2);padding:26px 28px;margin-bottom:18px}
-.node h2{font-size:27px;font-weight:600;margin-bottom:4px}
-.node .desc{color:var(--paper-dim);font-size:16px;max-width:70ch;margin-bottom:20px}
-.run-row{display:grid;grid-template-columns:78px 1fr auto;gap:12px;align-items:center;margin-bottom:8px}
-.os{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim)}
-code.cmd{font-family:var(--mono);font-size:13px;color:var(--signal);background:var(--ink);border:1px solid var(--line);padding:10px 12px;overflow-x:auto;white-space:nowrap}
-.copy{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper-dim);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:.15s}
-.copy:hover{color:var(--signal);border-color:var(--signal)}
-.copy.done{color:var(--good);border-color:var(--good)}
-.own{margin-top:18px;font-size:14.5px;color:var(--paper-dim)}
-.own a{color:var(--signal);text-decoration:none;border-bottom:1px dotted var(--signal)}
-.own a:hover{border-bottom-style:solid}
-.node.soon{border-style:dashed;background:transparent}
-.node.soon h2{color:var(--paper-dim)}
+.card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
+.card h2{font-size:20px;font-weight:600}
+.card .desc{margin-top:6px;font-size:14.5px;color:var(--text-secondary);max-width:76ch}
+.card em{font-style:italic;color:var(--text-primary)}
+.run{margin-top:18px;display:grid;gap:8px}
+.run-row{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:center}
+.os{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
+code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:11px 13px;overflow-x:auto;white-space:nowrap}
+.copy{font-family:inherit;font-size:12px;font-weight:500;background:var(--card-bg);color:var(--text-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:10px 13px;cursor:pointer;transition:.15s}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+.copy.done{color:var(--success);border-color:var(--success)}
+.card .own{margin-top:16px;font-size:14px;color:var(--text-secondary)}
+.card .own a{color:var(--accent);text-decoration:none;font-weight:500}
+.card .own a:hover{text-decoration:underline}
+.card.soon{border-style:dashed;box-shadow:none;background:transparent}
+.card.soon h2{color:var(--text-secondary)}
 
-/* ownership model */
-.model{border-top:1px solid var(--line);margin-top:56px;padding-top:8px}
-.model h2{font-size:28px;font-weight:600;margin:22px 0 22px;max-width:24ch}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.step{background:var(--ink2);padding:22px 22px 26px}
-.step .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--signal);margin-bottom:10px}
-.step h3{font-size:19px;font-weight:600;margin-bottom:8px}
-.step p{font-size:14.5px;color:var(--paper-dim)}
-.step b{color:var(--paper);font-weight:600}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.step .n{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+.step h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.step p{font-size:13.5px;color:var(--text-secondary)}
+.step b{color:var(--text-primary);font-weight:600}
 
-.foot{margin-top:60px;border-top:1px solid var(--line);padding-top:18px;font-family:var(--mono);font-size:11px;color:var(--paper-dim);line-height:1.9}
-@media(max-width:720px){h1{font-size:34px}.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.os{margin-top:6px}}
+footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);padding:20px 24px;margin-top:48px}
+.foot-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary)}
+.foot-in a{color:var(--text-secondary)}
+@media(max-width:720px){.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.hero h1{font-size:26px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <div class="kicker"><span class="dot"></span> GROUNDED · newsroom-owned AI</div>
-    <h1>Small AI tools your newsroom <span>runs, owns, and adapts</span></h1>
-    <p class="lede">Each tool here is a <b>Node</b> — a self-contained app that runs on your own
-      computer, on your own data. Install one with a single command. The code is open, so you can
-      open it up, change it, and make it fit how <i>your</i> newsroom actually works.</p>
+  <header class="site">
+    <div class="bar">
+      <a class="brand" href="/">
+        <b>Grounded: AI&nbsp;Legal</b>
+        <span>Global AI lawsuits &amp; regulations tracker</span>
+      </a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/legal/lawsuits">Lawsuits</a>
+        <a href="/legal/regulations">Regulations</a>
+        <a href="/legal/explore">Connections</a>
+        <a href="/legal/use-cases">Use cases</a>
+        <a href="/tools/">Tools</a>
+        <a href="/legal/sources">Sources</a>
+        <a href="/legal/submit">Submit</a>
+        <a href="/nodes/" class="active">Nodes</a>
+        <a href="/login" class="signin">Sign&nbsp;in&nbsp;/&nbsp;Register</a>
+      </nav>
+    </div>
   </header>
 
-  <div class="sec-h">The Nodes</div>
-
-  <article class="node">
-    <h2>Audience Signal</h2>
-    <p class="desc">Reads a Word matrix of your published stories and their Facebook reach +
-      engagement, and shows what your audience actually rewards — by beat, format, headline shape
-      and over time. The signal is engagement <i>rate</i>, not raw reach, so boosting and the
-      algorithm don't fool it.</p>
-
-    <div class="run-row">
-      <span class="os">macOS</span>
-      <code class="cmd" id="cmd-mac">curl -fsSL https://grounded.developai.co.za/nodes/analytics/mac | bash</code>
-      <button class="copy" data-copy="cmd-mac">copy</button>
-    </div>
-    <div class="run-row">
-      <span class="os">Windows</span>
-      <code class="cmd" id="cmd-win">irm https://grounded.developai.co.za/nodes/analytics/windows | iex</code>
-      <button class="copy" data-copy="cmd-win">copy</button>
+  <main>
+    <div class="hero">
+      <h1>Nodes</h1>
+      <p>Small AI tools your newsroom runs, owns, and adapts. Each Node installs with a single
+        command and runs on your own computer, on your own data.</p>
     </div>
 
-    <p class="own">Paste it into your computer's built-in terminal — nothing to install by hand.
-      Or <a href="https://github.com/pauldevelopai/node-analytics">get the code on GitHub</a> to
-      fork it and make it your own.</p>
-  </article>
+    <div class="sec-label">Available now</div>
+    <article class="card">
+      <h2>Audience Signal</h2>
+      <p class="desc">Reads a Word matrix of your published stories and their Facebook reach +
+        engagement, and shows what your audience actually rewards — by beat, format, headline shape
+        and over time. The signal is engagement <em>rate</em>, not raw reach, so boosting and the
+        algorithm don't fool it.</p>
+      <div class="run">
+        <div class="run-row">
+          <span class="os">macOS</span>
+          <code class="cmd" id="cmd-mac">curl -fsSL https://grounded.developai.co.za/nodes/analytics/mac | bash</code>
+          <button class="copy" data-copy="cmd-mac">Copy</button>
+        </div>
+        <div class="run-row">
+          <span class="os">Windows</span>
+          <code class="cmd" id="cmd-win">irm https://grounded.developai.co.za/nodes/analytics/windows | iex</code>
+          <button class="copy" data-copy="cmd-win">Copy</button>
+        </div>
+      </div>
+      <p class="own">Paste it into your computer's built-in terminal — nothing to install by hand.
+        Or <a href="https://github.com/pauldevelopai/node-analytics">get the code on GitHub</a> to
+        fork it and make it your own.</p>
+    </article>
 
-  <article class="node soon">
-    <h2>More Nodes coming</h2>
-    <p class="desc">GROUNDED grows one Node at a time, each built alongside a newsroom around a
-      real need. New tools land here as they're ready.</p>
-  </article>
+    <article class="card soon">
+      <h2>More Nodes coming</h2>
+      <p class="desc">GROUNDED grows one Node at a time, each built alongside a newsroom around a
+        real need. New tools land here as they're ready.</p>
+    </article>
 
-  <section class="model">
-    <div class="sec-h">How GROUNDED works</div>
-    <h2>You own it. You can change it. It gets better together.</h2>
+    <div class="sec-label">How Nodes work</div>
     <div class="steps">
       <div class="step">
         <div class="n">01 · RUN</div>
         <h3>One command</h3>
-        <p>Install a Node with a single line in your terminal. No accounts to create, nothing to
-          set up by hand. It runs on your machine, on your data.</p>
+        <p>Install a Node with a single line in your terminal. No accounts, nothing set up by hand.
+          It runs on your machine, on your data.</p>
       </div>
       <div class="step">
         <div class="n">02 · OWN</div>
         <h3>Make it yours</h3>
-        <p>The code is open. <b>Download it, edit it, adapt it.</b> Your data and your changes stay
-          yours — a Node keeps working even if Develop AI disappears tomorrow.</p>
+        <p>The code is open. <b>Download it, edit it, adapt it.</b> Your data stays on your computer
+          — a Node keeps working even if Develop AI disappears tomorrow.</p>
       </div>
       <div class="step">
         <div class="n">03 · SHARE BACK</div>
         <h3>Build on each other</h3>
-        <p>Improvements flow back upstream, and other newsrooms build on them. Each Node grows from
-          <b>real newsroom experience</b> — not a vendor's roadmap.</p>
+        <p>Improvements flow back upstream, and other newsrooms build on them — each Node grows from
+          <b>real newsroom experience</b>, not a vendor's roadmap.</p>
       </div>
     </div>
-  </section>
+  </main>
 
-  <div class="foot">
-    GROUNDED — built by Develop AI, with and for African newsrooms.<br>
-    Stuck on setup? Email Paul at Develop AI.
-  </div>
+  <footer class="site">
+    <div class="foot-in">
+      <span>© Grounded · <a href="https://grounded.developai.co.za">grounded.developai.co.za</a></span>
+      <span>Newsroom-owned AI tools, by Develop AI</span>
+    </div>
+  </footer>
 
-</div>
-
-<script>
-  document.querySelectorAll('button.copy').forEach(b => {
-    b.addEventListener('click', async () => {
-      const text = document.getElementById(b.dataset.copy).textContent.trim();
-      try { await navigator.clipboard.writeText(text); } catch (e) {}
-      b.textContent = 'copied'; b.classList.add('done');
-      setTimeout(() => { b.textContent = 'copy'; b.classList.remove('done'); }, 1300);
+  <script>
+    document.querySelectorAll('button.copy').forEach(b => {
+      b.addEventListener('click', async () => {
+        const t = document.getElementById(b.dataset.copy).textContent.trim();
+        try { await navigator.clipboard.writeText(t); } catch (e) {}
+        b.textContent = 'Copied'; b.classList.add('done');
+        setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done'); }, 1300);
+      });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
