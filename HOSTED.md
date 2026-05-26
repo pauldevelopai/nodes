@@ -87,3 +87,40 @@ This is the platform build, not a tweak — **days of focused work**, phased:
 
 Build it for **one** Node (Audience Signal) first; once it works, the same hosted host
 serves every future Node with no extra platform work.
+
+---
+
+## Locked decisions + confirmed stack (2026-05-26)
+
+- **Auth: reuse holly's accounts.** holly issues a **JWT in a cookie `tracker_token`**,
+  verified with `config.jwtSecret` (`tracker/server/middleware/auth.js`). The hosted
+  Node runs on the same domain, so the browser already sends that cookie to it — the
+  Node verifies it with the same secret, reads the user, and scopes their data. No new
+  login UI; unauthenticated visitors are redirected to holly's existing `/login`.
+- **AI: one shared GROUNDED key** server-side (cheap Haiku) + a per-newsroom usage cap.
+- **Storage: the box's existing Postgres** (`127.0.0.1:5432`). Tables `node_analytics_*`
+  with a `newsroom_id` column; every query scoped to the signed-in newsroom.
+- Box libs available: `pg`, `jsonwebtoken`, `bcryptjs`, `cookie-parser`.
+
+## Concrete build plan
+
+**Phase 1 — Multi-tenant host (in `grounded-node-runtime`).** A Postgres-backed
+implementation of the host interface (`db`/`ai`/`log`/`tablePrefix`) that resolves the
+`newsroom_id` **per request** (today's lite host bakes one tenant at startup — adding
+per-request tenant context is the one real architectural change). Reused by every Node.
+
+**Phase 2 — Auth + hosted entrypoint.** Express middleware verifies the `tracker_token`
+JWT → `newsroom_id` (else redirect to `/login`); mounts the *existing* `lib/handlers.js`
+on the multi-tenant host. AI uses the shared key.
+
+**Phase 3 — Deploy.** Run the hosted Node as a service on `:3002`; Caddy
+reverse-proxies `grounded.developai.co.za/nodes/analytics/app/*` → it (grounded-only,
+tracker untouched). Secrets (JWT secret, DB creds, shared AI key) from an env file on
+the box, never committed.
+
+**Phase 4 — Front door.** Add **"Use it online"** to each Node card, above the local
+install commands.
+
+**To resolve at build time:** what in holly's JWT identifies a *newsroom* (a user id?
+an organisation id? — holly has an Organisations model) — that becomes the tenant
+scoping key. Confirm from the users/orgs schema in Phase 1.
