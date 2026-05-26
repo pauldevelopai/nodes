@@ -19,7 +19,7 @@ all five:
 2. **Generic, not branded to one newsroom** — the same code serves anyone.
 3. **No one's data travels with the code** — data is local to each install.
 4. **The newsroom owns it** — their GitHub fork is their copy and identity.
-5. **Discoverable** — it's listed on the front door at `nodes.developai.co.za`.
+5. **Discoverable** — it's listed on the front door at `grounded.developai.co.za/nodes`.
 
 ---
 

@@ -1,14 +1,14 @@
 # nodes — the GROUNDED front door
 
-The public landing page for **GROUNDED Nodes**, served at
-**https://nodes.developai.co.za**. It does two jobs:
+The landing page for **GROUNDED Nodes**, served at
+**`https://grounded.developai.co.za/nodes/`** by Caddy on the GROUNDED box
+(alongside the AI Legal tracker, which stays at the domain root).
 
-1. **Lists the Nodes** with a one-line description and the one-command installer
-   for each (`index.html`).
-2. **Serves the install command URLs** — the clean `nodes.developai.co.za/<node>/{mac,windows}`
-   links that each Node's README tells newsrooms to paste (`_redirects`).
+It lists the Nodes with their one-command installers, and the same Caddy block
+serves the install-command URLs (`/nodes/<slug>/{mac,windows}` → each Node's raw
+`install.sh` / `install.ps1`).
 
-Each Node itself lives in its **own** repo (e.g.
+Each Node lives in its **own** repo (e.g.
 [`node-analytics`](https://github.com/pauldevelopai/node-analytics)). This repo
 is only the front door — no Node code here.
 
@@ -16,35 +16,20 @@ is only the front door — no Node code here.
 
 | File | Purpose |
 |------|---------|
-| `index.html` | The landing page (self-contained — inline CSS + a tiny copy-button script). |
-| `_redirects` | Maps the clean install URLs to each Node's raw install script. |
+| `index.html` | the landing page (self-contained — inline CSS + a tiny copy-button script) |
+| `_redirects` | install-URL redirects for an **optional** standalone Netlify/Cloudflare deploy. The live deploy uses Caddy instead — see `DEPLOY.md`. |
+| `DEPLOY.md` | how it's hosted (the Caddy block + apply/update steps) |
+| `NODE_PATTERN.md` | the spec + checklist for bringing other Nodes in line with `node-analytics` |
 
-## The install redirects
+## Deploy / update
 
-```
-/analytics/mac      → raw …/node-analytics/main/install.sh    (302)
-/analytics/windows  → raw …/node-analytics/main/install.ps1   (302)
-```
-
-`curl -fsSL` and PowerShell's `irm` both follow redirects, so a 302 to the raw
-GitHub script is all that's needed — the script then downloads the app itself.
-
-## Deploy
-
-Point `nodes.developai.co.za` at this repo with any static host that reads a
-`_redirects` file — **Netlify** or **Cloudflare Pages** work with zero config
-(connect the repo, set the custom domain, done). The landing page and the
-install redirects both come from this one deploy.
-
-On a host without `_redirects` support (nginx, Apache, GitHub Pages, etc.),
-recreate the two redirects from the table above in that host's config instead.
+See `DEPLOY.md`. In short: the files live at `/var/www/nodes` on the box; to ship
+a change, push here and run `sudo git -C /var/www/nodes pull` on the box.
 
 ## Adding a new Node
 
 1. Add a card to `index.html` (copy the Audience Signal block; change the name,
    description, and the two install commands).
-2. Add two lines to `_redirects` pointing `/<node>/mac` and `/<node>/windows`
-   at that Node's `install.sh` / `install.ps1`.
-
-That's it — the new Node shows up on the front door and its install command goes
-live.
+2. Add the redirect handles for `/nodes/<slug>/{mac,windows}` to the Caddy block
+   (`DEPLOY.md` shows the shape) — and to `_redirects` too if you also keep the
+   standalone Netlify option.
