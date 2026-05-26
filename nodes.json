@@ -22,7 +22,7 @@
       "repo": "node-verifier",
       "name": "Capital FM Election Watch",
       "status": "live",
-      "hosted": false,
+      "hosted": true,
       "desc": "AI-assisted claim verification and origin-tracking of suspicious content, tuned for the August 2026 Zambian elections. Verify claims against a corpus of past examples, and analyse where foreign-manufactured content came from."
     }
   ]
