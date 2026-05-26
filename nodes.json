@@ -16,6 +16,14 @@
       "status": "live",
       "hosted": false,
       "desc": "Train a journalist's voice from a short sample, then turn a transcript into an AI-generated audio podcast in that voice. Audio and keys stay on your own machine."
+    },
+    {
+      "slug": "verifier",
+      "repo": "node-verifier",
+      "name": "Capital FM Election Watch",
+      "status": "live",
+      "hosted": false,
+      "desc": "AI-assisted claim verification and origin-tracking of suspicious content, tuned for the August 2026 Zambian elections. Verify claims against a corpus of past examples, and analyse where foreign-manufactured content came from."
     }
   ]
 }
