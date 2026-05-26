@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nodes · Grounded</title>
-<meta name="description" content="GROUNDED Nodes — small AI tools your newsroom runs, owns, and adapts. Install one with a single command.">
+<meta name="description" content="GROUNDED Nodes — small AI tools your newsroom runs, owns, and adapts. Install one with a single command, or use it online.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +30,9 @@ nav a{padding:8px 12px;border-radius:var(--radius);font-size:14px;font-weight:50
 nav a:hover{color:var(--text-primary)}
 nav a.active{font-weight:600;color:var(--text-primary);background:var(--active-bg)}
 nav a.signin{border:1px solid var(--border-color)}
+nav .who{padding:8px 6px;font-size:14px;font-weight:600;color:var(--text-primary)}
+nav .signout{font-family:inherit;font-size:14px;font-weight:500;color:var(--text-secondary);background:transparent;border:1px solid var(--border-color);border-radius:var(--radius);padding:7px 12px;cursor:pointer}
+nav .signout:hover{color:var(--text-primary)}
 
 /* ── Main ── */
 main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 24px}
@@ -57,6 +60,7 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
 .card .own a:hover{text-decoration:underline}
 .card.soon{border-style:dashed;box-shadow:none;background:transparent}
 .card.soon h2{color:var(--text-secondary)}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
 
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .step{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
@@ -88,7 +92,7 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         <a href="/legal/sources">Sources</a>
         <a href="/legal/submit">Submit</a>
         <a href="/nodes/" class="active">Nodes</a>
-        <a href="/login" class="signin">Sign&nbsp;in&nbsp;/&nbsp;Register</a>
+        <span id="auth-slot"><a href="/login" class="signin">Sign&nbsp;in&nbsp;/&nbsp;Register</a></span>
       </nav>
     </div>
   </header>
@@ -97,49 +101,19 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
     <div class="hero">
       <h1>Nodes</h1>
       <p>Small AI tools your newsroom runs, owns, and adapts. Each Node installs with a single
-        command and runs on your own computer, on your own data.</p>
+        command and runs on your own computer — or sign in and use it online.</p>
     </div>
 
-    <div class="sec-label">Available now</div>
-    <article class="card">
-      <h2>Audience Signal</h2>
-      <p class="desc">Reads a Word matrix of your published stories and their Facebook reach +
-        engagement, and shows what your audience actually rewards — by beat, format, headline shape
-        and over time. The signal is engagement <em>rate</em>, not raw reach, so boosting and the
-        algorithm don't fool it.</p>
-      <a class="use-online" href="/nodes/analytics/app/">Use it online&nbsp;&rarr;</a>
-      <div class="online-note">Sign in with your tracker account and use it in your browser — nothing to install.</div>
-      <div class="run-label">Or run it on your own computer:</div>
-      <div class="run">
-        <div class="run-row">
-          <span class="os">macOS</span>
-          <code class="cmd" id="cmd-mac">curl -fsSL https://grounded.developai.co.za/nodes/analytics/mac | bash</code>
-          <button class="copy" data-copy="cmd-mac">Copy</button>
-        </div>
-        <div class="run-row">
-          <span class="os">Windows</span>
-          <code class="cmd" id="cmd-win">irm https://grounded.developai.co.za/nodes/analytics/windows | iex</code>
-          <button class="copy" data-copy="cmd-win">Copy</button>
-        </div>
-      </div>
-      <p class="own">Paste it into your computer's built-in terminal — nothing to install by hand.
-        Or <a href="https://github.com/pauldevelopai/node-analytics">get the code on GitHub</a> to
-        fork it and make it your own.</p>
-    </article>
-
-    <article class="card soon">
-      <h2>More Nodes coming</h2>
-      <p class="desc">GROUNDED grows one Node at a time, each built alongside a newsroom around a
-        real need. New tools land here as they're ready.</p>
-    </article>
+    <!-- Node cards are rendered from /nodes/nodes.json — add a Node = add an entry there. -->
+    <div id="node-list"></div>
 
     <div class="sec-label">How Nodes work</div>
     <div class="steps">
       <div class="step">
         <div class="n">01 · RUN</div>
         <h3>One command</h3>
-        <p>Install a Node with a single line in your terminal. No accounts, nothing set up by hand.
-          It runs on your machine, on your data.</p>
+        <p>Install a Node with a single line in your terminal, or use it online with your Grounded
+          account. It runs on your data.</p>
       </div>
       <div class="step">
         <div class="n">02 · OWN</div>
@@ -164,14 +138,73 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
   </footer>
 
   <script>
-    document.querySelectorAll('button.copy').forEach(b => {
-      b.addEventListener('click', async () => {
-        const t = document.getElementById(b.dataset.copy).textContent.trim();
-        try { await navigator.clipboard.writeText(t); } catch (e) {}
-        b.textContent = 'Copied'; b.classList.add('done');
-        setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done'); }, 1300);
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const BASE = 'https://grounded.developai.co.za';
+
+    // ── Auth-aware nav: reflect the signed-in user, like the rest of the site ──
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const u = d && d.user; if (!u) return;
+        const name = (u.name || u.email || '').split(' ')[0];
+        const slot = document.getElementById('auth-slot');
+        slot.innerHTML = '<span class="who">Hi, ' + esc(name) + '</span> <button class="signout" type="button">Sign out</button>';
+        slot.querySelector('.signout').addEventListener('click', () => {
+          fetch('/api/auth/logout', { method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json' } })
+            .then(() => location.reload()).catch(() => location.reload());
+        });
+      })
+      .catch(() => {});
+
+    // ── Node cards rendered from the registry ──
+    function nodeCard(n) {
+      const online = (n.hosted && n.status === 'live')
+        ? '<a class="use-online" href="/nodes/' + esc(n.slug) + '/app/">Use it online&nbsp;&rarr;</a>'
+          + '<div class="online-note">Sign in with your Grounded account and use it in your browser — nothing to install.</div>'
+          + '<div class="run-label">Or run it on your own computer:</div>'
+        : '<div class="run-label">Run it on your own computer:</div>';
+      const macId = 'cmd-' + n.slug + '-mac', winId = 'cmd-' + n.slug + '-win';
+      return '<article class="card">'
+        + '<h2>' + esc(n.name) + '</h2>'
+        + '<p class="desc">' + (n.desc || '') + '</p>'
+        + online
+        + '<div class="run">'
+        + '<div class="run-row"><span class="os">macOS</span><code class="cmd" id="' + macId + '">curl -fsSL ' + BASE + '/nodes/' + esc(n.slug) + '/mac | bash</code><button class="copy" data-copy="' + macId + '">Copy</button></div>'
+        + '<div class="run-row"><span class="os">Windows</span><code class="cmd" id="' + winId + '">irm ' + BASE + '/nodes/' + esc(n.slug) + '/windows | iex</code><button class="copy" data-copy="' + winId + '">Copy</button></div>'
+        + '</div>'
+        + '<p class="own">Paste it into your computer\'s built-in terminal — nothing to install by hand. '
+        + 'Or <a href="https://github.com/pauldevelopai/' + esc(n.repo) + '">get the code on GitHub</a> to fork it and make it your own.</p>'
+        + '</article>';
+    }
+    function soonCard(n) {
+      return '<article class="card soon"><h2>' + esc(n.name) + '<span class="badge">Coming soon</span></h2>'
+        + '<p class="desc">' + (n.desc || '') + '</p></article>';
+    }
+    function wireCopy() {
+      document.querySelectorAll('button.copy').forEach(b => {
+        b.addEventListener('click', async () => {
+          const t = document.getElementById(b.dataset.copy).textContent.trim();
+          try { await navigator.clipboard.writeText(t); } catch (e) {}
+          b.textContent = 'Copied'; b.classList.add('done');
+          setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done'); }, 1300);
+        });
       });
-    });
+    }
+    fetch('nodes.json', { cache: 'no-cache' })
+      .then(r => r.json())
+      .then(data => {
+        const nodes = (data && data.nodes) || [];
+        const live = nodes.filter(n => n.status === 'live');
+        const soon = nodes.filter(n => n.status !== 'live');
+        let html = '';
+        if (live.length) html += '<div class="sec-label">Available now</div>' + live.map(nodeCard).join('');
+        if (soon.length) html += '<div class="sec-label">Coming soon</div>' + soon.map(soonCard).join('');
+        document.getElementById('node-list').innerHTML = html || '<p class="desc">No Nodes listed yet.</p>';
+        wireCopy();
+      })
+      .catch(() => {
+        document.getElementById('node-list').innerHTML = '<p class="desc">Could not load the Node list. Refresh to try again.</p>';
+      });
   </script>
 </body>
 </html>

@@ -1,0 +1,21 @@
+{
+  "_comment": "The Nodes registry — single source of truth for the front door. Add a Node = add an entry here, push, and `git -C /var/www/nodes pull` on the box. slug → install URLs (/nodes/<slug>/{mac,windows}) and hosted app (/nodes/<slug>/app/). repo → github.com/pauldevelopai/<repo>. status: 'live' (shows install + online) or 'soon'. hosted: true if it runs online on the box. 'desc' may contain simple inline HTML (e.g. <em>).",
+  "nodes": [
+    {
+      "slug": "analytics",
+      "repo": "node-analytics",
+      "name": "Audience Signal",
+      "status": "live",
+      "hosted": true,
+      "desc": "Reads a Word or PDF matrix of your published stories and their Facebook reach + engagement, and shows what your audience actually rewards — by beat, format, headline shape and over time. The signal is engagement <em>rate</em>, not raw reach, so boosting and the algorithm don't fool it."
+    },
+    {
+      "slug": "podcasting",
+      "repo": "node-podcasting",
+      "name": "Explain Podcast Studio",
+      "status": "soon",
+      "hosted": false,
+      "desc": "Train a newsroom voice and turn transcripts into MP3 podcasts. Audio and keys stay on your own machine."
+    }
+  ]
+}
