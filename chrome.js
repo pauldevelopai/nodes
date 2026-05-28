@@ -34,6 +34,7 @@
     { label: 'Tools', href: '/tools/' },
     { label: 'Workflow builder', href: '/builder' },
     { label: 'Run a workflow', href: '/run' },
+    { label: 'Operations tools', href: '/tools-hub' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
@@ -122,7 +123,7 @@
   var path = location.pathname;
   var dataActive = /^\/legal\/sources/.test(path);
   var trackerActive = /^\/legal(\/|$)/.test(path) && !dataActive;
-  var builderActive = /^\/(nodes|tools|open-source|builder|run)(\/|$)/.test(path);
+  var builderActive = /^\/(nodes|tools-hub|tool|tools|open-source|builder|run)(\/|$)/.test(path);
   var monetisationActive = /^\/monetisation(\/|$)/.test(path);
   var trainingActive = /^\/training(\/|$)/.test(path);
   var homeActive = path === '/' ;
