@@ -33,7 +33,7 @@ A conforming `node-<slug>` repo has:
 | `lib/handlers.js` | Your work, written against the host interface only (`host.db` / `host.store` / `host.ai` / `host.parse` / `host.log` / `host.feedback`). The same module is imported by both entries. |
 | `public/` | The dashboard. **Relative** asset + API paths (`<script src="app.js">`, `fetch("api/…")`) so it works at `/` locally and under `/nodes/<slug>/app/` hosted. |
 | `install.sh`, `install.ps1` | One-command installers. Copy from the template; change only `REPO=pauldevelopai/node-<slug>` and `DISPLAY_NAME`. |
-| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.9.0`). |
+| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.10.0`). |
 | `NODE.md`, `README.md`, `CLAUDE.md` | Identity card, the newsroom setup guide, and the Claude-Code map. |
 
 **Hosted boot — the two shapes:**
@@ -57,8 +57,10 @@ await createHostedServer({
 
 `createHostedServer` provides everything else for free: tracker-cookie auth, a
 per-request newsroom-scoped host, the standard `/api/*` route map, an empty
-`node_<slug>_store` table, and the injected GROUNDED nav + "run it locally"
-footer + feedback widget.
+`node_<slug>_store` table, the "run it locally" footer, and — via runtime
+v0.10.0 — the shared **`/nodes/chrome.js`** chrome (Builder/Tracker/Monetisation
+nav + the feedback & AI-chat bubbles). You never hand-write nav in a Node; it's
+injected and stays consistent with every other surface.
 
 ## 2. List it on the front door (always)
 

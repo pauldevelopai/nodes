@@ -2,7 +2,9 @@
 
 > Open this first. It's the single map of the whole system: what the repos are,
 > how the live box is wired, how to **add a new Node**, how to deploy, and the
-> gotchas that will otherwise cost you an hour. Last reviewed 2026-05-27.
+> gotchas that will otherwise cost you an hour. Last reviewed 2026-05-28.
+> Building a Node? Jump to **`ADD_A_NODE.md`**. New since the first draft? See
+> **"Recent platform additions"** just below.
 
 **Grounded** = newsroom-owned AI, by **Develop AI**. One domain,
 `grounded.developai.co.za`, three things on it:
@@ -18,6 +20,28 @@ The whole point of a Node: **the same handler code runs two ways** — on a
 journalist's laptop (data + AI key stay on their machine) and online
 (multi-tenant, per-newsroom). You write the logic once against a *host interface*;
 the runtime gives you both boots.
+
+---
+
+## Recent platform additions (2026-05-28)
+Built after this doc's first draft — context for whoever picks this up:
+
+- **Public menu is now Builder / Tracker / Monetisation** (three dropdowns). The
+  whole top nav + the feedback & AI-chat bubbles are injected by ONE shared script,
+  **`nodes/chrome.js`** (served at `/nodes/chrome.js`). **Hosted Nodes get their nav
+  + bubbles from it automatically** (runtime v0.10.0 injects the `<script>` — you no
+  longer hand-write nav in a Node). Change the menu/bubbles in one place: edit
+  `chrome.js`, then `git -C /var/www/nodes pull` on the box. No Node redeploy.
+- **Content ingestion pipelines** (in `tracker`): a generic scraper + Claude AI
+  layer (`server/services/content-ingest/`, tables `content_sources` /
+  `content_raw_items` / compiled `monetisation_items` + `oss_tools`). Two domains
+  live — **Monetisation** (→ public `/monetisation`) and **open-source Tools** (→
+  public `/open-source`). Managed from the admin **"Ingestion & Scrapers"** page
+  (`/ingestion`): a command-centre showing every pipeline's flow — coming in →
+  published to users → synced to RAG. All on the cron scheduler now.
+- **RAG** uses OpenAI **text-embedding-3-small (1536-dim)** + hybrid vector/keyword
+  retrieval; generation is Claude Sonnet 4.6 + Groq gpt-oss-120b. Self-populates via
+  scheduled jobs. (None of this affects how you build a Node — it's tracker-side.)
 
 ---
 
@@ -154,8 +178,9 @@ names to routes automatically (`getSetupStatus`→`/api/setup`, `postBrief`→`/
 - **Delete the stale folders** listed above (`node-makanday-analytics`,
   `node-capitalfm-verifier`, `grounded-hub`) once you've confirmed nothing local
   references them.
-- **node-analytics box runs runtime v0.8.0** (git now pins v0.9.0). Low priority —
-  v0.8.0 works; it picks up v0.9.0 next time you deploy analytics.
+- **Runtime is v0.10.0**; all hosted Nodes (analytics, verifier) pin and run it.
+  New Nodes should pin `#v0.10.0`. (v0.10.0 = hosted Nodes load the shared
+  `/nodes/chrome.js` for nav + bubbles instead of inline HTML.)
 - **Host node-podcasting** — needs a `server-hosted.js` plus blob storage for audio
   before it can go multi-tenant. Downloads/local already work.
 - **End-to-end smoke test you should do logged in** (only you can — it needs a
