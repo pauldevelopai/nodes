@@ -42,13 +42,7 @@
   var DATA = [
     { label: 'Sources', href: '/legal/sources' },
   ];
-  var MONETISATION = [
-    { label: 'Extracting value from your archive', href: '/monetisation#archive' },
-    { label: 'Accommodating AI crawlers for cash', href: '/monetisation#crawlers' },
-    { label: 'Answer Engine Optimization', href: '/monetisation#aeo' },
-    { label: 'Collective bargaining', href: '/monetisation#bargaining' },
-  ];
-  var AREAS = ['General', 'Nodes', 'Tools', 'Lawsuits', 'Regulations', 'Connections', 'Use cases', 'Sources'];
+  var AREAS =['General', 'Nodes', 'Tools', 'Lawsuits', 'Regulations', 'Connections', 'Use cases', 'Sources'];
   var CHAT_SUGGESTIONS = [
     'What cases has OpenAI been sued in?',
     'When does the EU AI Act take effect?',
@@ -144,7 +138,7 @@
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
       ddHtml('Builder', BUILDER, builderActive) +
       ddHtml('Tracker', TRACKER, trackerActive) +
-      ddHtml('Monetisation', MONETISATION, monetisationActive) +
+      '<a href="/monetisation" class="' + (monetisationActive ? 'active' : '') + '">Monetisation</a>' +
       ddHtml('Data', DATA, dataActive) +
       '<a href="/training" class="' + (trainingActive ? 'active' : '') + '">Training</a>' +
       '<span class="gc-auth" id="gc-auth"></span>' +
