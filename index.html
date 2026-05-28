@@ -19,20 +19,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--content-bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── Header: replica of the tracker's nav ── */
-header.site{border-bottom:1px solid var(--border-color);background:var(--card-bg);position:sticky;top:0;z-index:10}
-.bar{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.brand{text-decoration:none;color:var(--text-primary);display:flex;flex-direction:column;line-height:1.2}
-.brand b{font-size:20px;font-weight:700;letter-spacing:-0.01em}
-.brand span{font-size:11px;color:var(--text-secondary);font-weight:500}
-nav{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
-nav a{padding:8px 12px;border-radius:var(--radius);font-size:14px;font-weight:500;color:var(--text-secondary);text-decoration:none}
-nav a:hover{color:var(--text-primary)}
-nav a.active{font-weight:600;color:var(--text-primary);background:var(--active-bg)}
-nav a.signin{border:1px solid var(--border-color)}
-nav .who{padding:8px 6px;font-size:14px;font-weight:600;color:var(--text-primary)}
-nav .signout{font-family:inherit;font-size:14px;font-weight:500;color:var(--text-secondary);background:transparent;border:1px solid var(--border-color);border-radius:var(--radius);padding:7px 12px;cursor:pointer}
-nav .signout:hover{color:var(--text-primary)}
+/* The top nav is injected by the shared /nodes/chrome.js (Builder/Tracker + auth). */
 
 /* ── Main ── */
 main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 24px}
@@ -74,29 +61,9 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
 .foot-in a{color:var(--text-secondary)}
 @media(max-width:720px){.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.hero h1{font-size:26px}}
 </style>
+<script defer src="/nodes/chrome.js"></script>
 </head>
 <body>
-  <header class="site">
-    <div class="bar">
-      <a class="brand" href="/">
-        <b>Grounded</b>
-        <span>Newsroom-owned AI &middot; by Develop&nbsp;AI</span>
-      </a>
-      <nav>
-        <a href="/">Home</a>
-        <a href="/legal/lawsuits">Lawsuits</a>
-        <a href="/legal/regulations">Regulations</a>
-        <a href="/legal/explore">Connections</a>
-        <a href="/legal/use-cases">Use cases</a>
-        <a href="/tools/">Tools</a>
-        <a href="/legal/sources">Sources</a>
-        <a href="/legal/submit">Submit</a>
-        <a href="/nodes/" class="active">Nodes</a>
-        <span id="auth-slot"><a href="/login" class="signin">Sign&nbsp;in&nbsp;/&nbsp;Register</a></span>
-      </nav>
-    </div>
-  </header>
-
   <main>
     <div class="hero">
       <h1>Nodes</h1>
@@ -140,21 +107,6 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
   <script>
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     const BASE = 'https://grounded.developai.co.za';
-
-    // ── Auth-aware nav: reflect the signed-in user, like the rest of the site ──
-    fetch('/api/auth/me', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(d => {
-        const u = d && d.user; if (!u) return;
-        const name = (u.name || u.email || '').split(' ')[0];
-        const slot = document.getElementById('auth-slot');
-        slot.innerHTML = '<span class="who">Hi, ' + esc(name) + '</span> <button class="signout" type="button">Sign out</button>';
-        slot.querySelector('.signout').addEventListener('click', () => {
-          fetch('/api/auth/logout', { method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json' } })
-            .then(() => location.reload()).catch(() => location.reload());
-        });
-      })
-      .catch(() => {});
 
     // ── Node cards rendered from the registry ──
     function nodeCard(n) {
