@@ -32,6 +32,7 @@
   var BUILDER = [
     { label: 'Nodes', href: '/nodes/' },
     { label: 'Tools', href: '/tools/' },
+    { label: 'Open source', href: '/open-source' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
