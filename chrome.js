@@ -40,6 +40,12 @@
     { label: 'Use cases', href: '/legal/use-cases' },
     { label: 'Sources', href: '/legal/sources' },
   ];
+  var MONETISATION = [
+    { label: 'Extracting value from your archive', href: '/monetisation#archive' },
+    { label: 'Accommodating AI crawlers for cash', href: '/monetisation#crawlers' },
+    { label: 'Answer Engine Optimization', href: '/monetisation#aeo' },
+    { label: 'Collective bargaining', href: '/monetisation#bargaining' },
+  ];
   var AREAS = ['General', 'Nodes', 'Tools', 'Lawsuits', 'Regulations', 'Connections', 'Use cases', 'Sources'];
   var CHAT_SUGGESTIONS = [
     'What cases has OpenAI been sued in?',
@@ -118,6 +124,7 @@
   var path = location.pathname;
   var trackerActive = /^\/legal(\/|$)/.test(path);
   var builderActive = /^\/(nodes|tools)(\/|$)/.test(path);
+  var monetisationActive = /^\/monetisation(\/|$)/.test(path);
   var homeActive = path === '/' ;
 
   function ddHtml(label, items, active) {
@@ -133,6 +140,7 @@
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
       ddHtml('Builder', BUILDER, builderActive) +
       ddHtml('Tracker', TRACKER, trackerActive) +
+      ddHtml('Monetisation', MONETISATION, monetisationActive) +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );
