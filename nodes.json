@@ -24,6 +24,14 @@
       "status": "live",
       "hosted": true,
       "desc": "AI-assisted claim verification and origin-tracking of suspicious content, tuned for the August 2026 Zambian elections. Verify claims against a corpus of past examples, and analyse where foreign-manufactured content came from."
+    },
+    {
+      "slug": "progress-tracker",
+      "repo": "node-progress-tracker",
+      "name": "Progress Tracker",
+      "status": "live",
+      "hosted": true,
+      "desc": "One accountability view of what every reporter is publishing across Facebook, the website, TikTok and WhatsApp. Log output by hand or <em>paste the message a reporter sent at the end of the day</em> — AI turns it into entries — then track each person against their target and pair it with how the posts actually performed."
     }
   ]
 }

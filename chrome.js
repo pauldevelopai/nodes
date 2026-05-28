@@ -32,13 +32,14 @@
   var BUILDER = [
     { label: 'Nodes', href: '/nodes/' },
     { label: 'Tools', href: '/tools/' },
-    { label: 'Open source', href: '/open-source' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
     { label: 'Regulations', href: '/legal/regulations' },
     { label: 'Connections', href: '/legal/explore' },
     { label: 'Use cases', href: '/legal/use-cases' },
+  ];
+  var DATA = [
     { label: 'Sources', href: '/legal/sources' },
   ];
   var MONETISATION = [
@@ -123,9 +124,11 @@
 
   // ── Nav ────────────────────────────────────────────────────────────────
   var path = location.pathname;
-  var trackerActive = /^\/legal(\/|$)/.test(path);
-  var builderActive = /^\/(nodes|tools)(\/|$)/.test(path);
+  var dataActive = /^\/legal\/sources/.test(path);
+  var trackerActive = /^\/legal(\/|$)/.test(path) && !dataActive;
+  var builderActive = /^\/(nodes|tools|open-source)(\/|$)/.test(path);
   var monetisationActive = /^\/monetisation(\/|$)/.test(path);
+  var trainingActive = /^\/training(\/|$)/.test(path);
   var homeActive = path === '/' ;
 
   function ddHtml(label, items, active) {
@@ -142,6 +145,8 @@
       ddHtml('Builder', BUILDER, builderActive) +
       ddHtml('Tracker', TRACKER, trackerActive) +
       ddHtml('Monetisation', MONETISATION, monetisationActive) +
+      ddHtml('Data', DATA, dataActive) +
+      '<a href="/training" class="' + (trainingActive ? 'active' : '') + '">Training</a>' +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );
