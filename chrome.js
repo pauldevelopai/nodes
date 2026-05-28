@@ -34,7 +34,7 @@
     { label: 'Tools', href: '/tools/' },
     { label: 'Workflow builder', href: '/builder' },
     { label: 'Run a workflow', href: '/run' },
-    { label: 'Operations tools', href: '/tools-hub' },
+    { label: 'Tools & Agents', href: '/tools-hub' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
