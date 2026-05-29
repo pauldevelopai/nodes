@@ -8,8 +8,9 @@
  *
  * It injects, identically everywhere:
  *   • the top nav — Home · Builder ▾ (Nodes, Tool Search, Workflow builder,
- *     Monetisation) · AI Policies ▾ (Lawsuits, Regulations, Connections,
- *     Use cases, Ethics) · Training ▾ (Training, Sources) · auth area
+ *     Monetisation) · AI Policies ▾ (Dashboard, Lawsuits, Regulations,
+ *     Connections, Use cases, Ethics, Ethics Policy Builder, Security Audit) ·
+ *     Training ▾ (Training, Sources) · auth area
  *   • the feedback bubble (signed-in only; logged-out → sign-in prompt) →
  *     POST /api/feedback, lands in the admin Feedback page
  *   • the AI-law chat bubble → POST /public/chat
@@ -37,11 +38,14 @@
     { label: 'Monetisation', href: '/monetisation' },
   ];
   var TRACKER = [
+    { label: 'Dashboard', href: '/legal/dashboard' },
     { label: 'Lawsuits', href: '/legal/lawsuits' },
     { label: 'Regulations', href: '/legal/regulations' },
     { label: 'Connections', href: '/legal/explore' },
     { label: 'Use cases', href: '/legal/use-cases' },
     { label: 'Ethics', href: '/legal/ethics' },
+    { label: 'Ethics Policy Builder', href: '/legal/ethics-builder' },
+    { label: 'Security Audit', href: '/tool/tool-security-audit' },
   ];
   var TRAINING = [
     { label: 'Training', href: '/training' },
