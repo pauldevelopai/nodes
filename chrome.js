@@ -133,9 +133,12 @@
   var trainingActive = /^\/training(\/|$)/.test(path) || sourcesActive;
   var homeActive = path === '/' ;
 
-  function ddHtml(label, items, active) {
-    return '<div class="gc-dd"><button type="button" class="' + (active ? 'active' : '') + '">' + esc(label) + ' <span style="font-size:10px">▾</span></button>' +
-      '<div class="gc-menu">' + items.map(function (i) { return '<a href="' + esc(i.href) + '">' + esc(i.label) + '</a>'; }).join('') + '</div></div>';
+  function menuLinks(items) {
+    return items.map(function (i) { return '<a href="' + esc(i.href) + '">' + esc(i.label) + '</a>'; }).join('');
+  }
+  function ddHtml(label, items, active, key) {
+    return '<div class="gc-dd" data-nav="' + esc(key) + '"><button type="button" class="' + (active ? 'active' : '') + '">' + esc(label) + ' <span style="font-size:10px">▾</span></button>' +
+      '<div class="gc-menu">' + menuLinks(items) + '</div></div>';
   }
 
   if (SHOW_NAV && !document.getElementById('gc-nav')) {
@@ -144,9 +147,9 @@
       '<a class="gc-brand" href="/"><b>Grounded</b><span>Newsroom-owned AI &middot; by Develop&nbsp;AI</span></a>' +
       '<div class="gc-links">' +
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
-      ddHtml('Builder', BUILDER, builderActive) +
-      ddHtml('AI Policies', TRACKER, trackerActive) +
-      ddHtml('Training', TRAINING, trainingActive) +
+      ddHtml('Builder', BUILDER, builderActive, 'builder') +
+      ddHtml('AI Policies', TRACKER, trackerActive, 'tracker') +
+      ddHtml('Training', TRAINING, trainingActive, 'training') +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );
@@ -166,6 +169,23 @@
     document.addEventListener('click', function () {
       nav.querySelectorAll('.gc-menu.open').forEach(function (m) { m.classList.remove('open'); });
     });
+
+    // Refresh the dropdowns from the single source of truth (/api/public/nav,
+    // server/config/publicNav.js). The hardcoded arrays above are the offline
+    // fallback and render instantly; this swaps in the live menu when it loads,
+    // so this front door can't drift from the main site. Only the menu LINKS
+    // are replaced — the toggle listeners live on the buttons, untouched.
+    fetch('/api/public/nav', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data) return;
+        ['builder', 'tracker', 'training'].forEach(function (key) {
+          var items = data[key];
+          var menu = nav.querySelector('.gc-dd[data-nav="' + key + '"] .gc-menu');
+          if (menu && Array.isArray(items) && items.length) menu.innerHTML = menuLinks(items);
+        });
+      })
+      .catch(function () { /* keep the fallback menu */ });
   }
 
   function renderAuth() {
