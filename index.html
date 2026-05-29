@@ -173,9 +173,10 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
       });
 
     // ── Tools & Agents (folded in from the old Tools & Agents page) ──
-    // /api/tool-kit needs a signed-in session; if it 401s we simply render
-    // nothing (the chrome shows a sign-in prompt). Cards open the workspace on
-    // the React app at /tool/<slug>.
+    // Public catalogue (/api/public/workflow-tools) so EVERYONE sees what's
+    // available — names, icons, descriptions. Cards open the workspace at
+    // /tool/<slug>; running one prompts sign-in there. Coming-soon shells get
+    // a badge and don't link.
     function toolCard(b) {
       const soon = b.comingSoon
         ? '<span class="tk-soon">coming soon</span>'
@@ -188,18 +189,24 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         ? '<div class="tk-card soon">' + inner + '</div>'
         : '<a class="tk-card" href="/tool/' + esc(b.slug) + '">' + inner + '</a>';
     }
-    fetch(BASE + '/api/tool-kit', { credentials: 'include', cache: 'no-cache' })
+    fetch(BASE + '/api/public/workflow-tools', { cache: 'no-cache' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (!data) return; // not signed in — leave the section empty
+        if (!data) return;
         const tools = data.tools || [], agents = data.agents || [];
         let html = '';
+        if (tools.length || agents.length) {
+          html += '<div class="sec-label">Tools &amp; agents</div>'
+            + '<p class="desc" style="margin:-6px 0 14px">Run one directly, or drop it into a workflow in the '
+            + '<a href="/builder" style="color:var(--accent);text-decoration:none;font-weight:600">Builder</a>. '
+            + 'Each is grounded in your Newsroom Profile.</p>';
+        }
         if (tools.length) {
-          html += '<div class="sec-label">Operations tools</div>'
+          html += '<div class="sec-label" style="margin-top:18px">Operations tools</div>'
             + '<div class="tk-grid">' + tools.map(toolCard).join('') + '</div>';
         }
         if (agents.length) {
-          html += '<div class="sec-label">Journalism agents</div>'
+          html += '<div class="sec-label" style="margin-top:18px">Journalism agents</div>'
             + '<div class="tk-grid">' + agents.map(toolCard).join('') + '</div>';
         }
         document.getElementById('toolkit-list').innerHTML = html;

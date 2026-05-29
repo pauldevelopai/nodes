@@ -7,9 +7,9 @@
  *     <script src="/nodes/chrome.js" defer></script>
  *
  * It injects, identically everywhere:
- *   • the top nav — Home · Builder ▾ (Nodes, Tool Search, Workflow builder) ·
- *     AI Policies ▾ (Lawsuits, Regulations, Connections, Use cases, Ethics) ·
- *     Monetisation · Training ▾ (Training, Sources) · auth area
+ *   • the top nav — Home · Builder ▾ (Nodes, Tool Search, Workflow builder,
+ *     Monetisation) · AI Policies ▾ (Lawsuits, Regulations, Connections,
+ *     Use cases, Ethics) · Training ▾ (Training, Sources) · auth area
  *   • the feedback bubble (signed-in only; logged-out → sign-in prompt) →
  *     POST /api/feedback, lands in the admin Feedback page
  *   • the AI-law chat bubble → POST /public/chat
@@ -34,6 +34,7 @@
     { label: 'Nodes', href: '/nodes/' },
     { label: 'Tool Search', href: '/tools/' },
     { label: 'Workflow builder', href: '/builder' },
+    { label: 'Monetisation', href: '/monetisation' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
@@ -124,8 +125,7 @@
   var path = location.pathname;
   var sourcesActive = /^\/legal\/sources/.test(path);
   var trackerActive = /^\/legal(\/|$)/.test(path) && !sourcesActive;
-  var builderActive = /^\/(nodes|tools-hub|tool|tools|open-source|builder|run)(\/|$)/.test(path);
-  var monetisationActive = /^\/monetisation(\/|$)/.test(path);
+  var builderActive = /^\/(nodes|tools-hub|tool|tools|open-source|builder|run|monetisation)(\/|$)/.test(path);
   var trainingActive = /^\/training(\/|$)/.test(path) || sourcesActive;
   var homeActive = path === '/' ;
 
@@ -142,7 +142,6 @@
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
       ddHtml('Builder', BUILDER, builderActive) +
       ddHtml('AI Policies', TRACKER, trackerActive) +
-      '<a href="/monetisation" class="' + (monetisationActive ? 'active' : '') + '">Monetisation</a>' +
       ddHtml('Training', TRAINING, trainingActive) +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
