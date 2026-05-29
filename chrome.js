@@ -7,8 +7,9 @@
  *     <script src="/nodes/chrome.js" defer></script>
  *
  * It injects, identically everywhere:
- *   • the top nav — Home · Builder ▾ (Nodes, Tools) · Tracker ▾ (Lawsuits,
- *     Regulations, Connections, Use cases, Sources) · auth area
+ *   • the top nav — Home · Builder ▾ (Nodes, Tool Search, Workflow builder) ·
+ *     AI Policies ▾ (Lawsuits, Regulations, Connections, Use cases, Ethics) ·
+ *     Monetisation · Training ▾ (Training, Sources) · auth area
  *   • the feedback bubble (signed-in only; logged-out → sign-in prompt) →
  *     POST /api/feedback, lands in the admin Feedback page
  *   • the AI-law chat bubble → POST /public/chat
@@ -31,18 +32,18 @@
 
   var BUILDER = [
     { label: 'Nodes', href: '/nodes/' },
-    { label: 'Tools', href: '/tools/' },
+    { label: 'Tool Search', href: '/tools/' },
     { label: 'Workflow builder', href: '/builder' },
-    { label: 'Run a workflow', href: '/run' },
-    { label: 'Tools & Agents', href: '/tools-hub' },
   ];
   var TRACKER = [
     { label: 'Lawsuits', href: '/legal/lawsuits' },
     { label: 'Regulations', href: '/legal/regulations' },
     { label: 'Connections', href: '/legal/explore' },
     { label: 'Use cases', href: '/legal/use-cases' },
+    { label: 'Ethics', href: '/legal/ethics' },
   ];
-  var DATA = [
+  var TRAINING = [
+    { label: 'Training', href: '/training' },
     { label: 'Sources', href: '/legal/sources' },
   ];
   var AREAS =['General', 'Nodes', 'Tools', 'Lawsuits', 'Regulations', 'Connections', 'Use cases', 'Sources'];
@@ -121,11 +122,11 @@
 
   // ── Nav ────────────────────────────────────────────────────────────────
   var path = location.pathname;
-  var dataActive = /^\/legal\/sources/.test(path);
-  var trackerActive = /^\/legal(\/|$)/.test(path) && !dataActive;
+  var sourcesActive = /^\/legal\/sources/.test(path);
+  var trackerActive = /^\/legal(\/|$)/.test(path) && !sourcesActive;
   var builderActive = /^\/(nodes|tools-hub|tool|tools|open-source|builder|run)(\/|$)/.test(path);
   var monetisationActive = /^\/monetisation(\/|$)/.test(path);
-  var trainingActive = /^\/training(\/|$)/.test(path);
+  var trainingActive = /^\/training(\/|$)/.test(path) || sourcesActive;
   var homeActive = path === '/' ;
 
   function ddHtml(label, items, active) {
@@ -140,10 +141,9 @@
       '<div class="gc-links">' +
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
       ddHtml('Builder', BUILDER, builderActive) +
-      ddHtml('Tracker', TRACKER, trackerActive) +
+      ddHtml('AI Policies', TRACKER, trackerActive) +
       '<a href="/monetisation" class="' + (monetisationActive ? 'active' : '') + '">Monetisation</a>' +
-      ddHtml('Data', DATA, dataActive) +
-      '<a href="/training" class="' + (trainingActive ? 'active' : '') + '">Training</a>' +
+      ddHtml('Training', TRAINING, trainingActive) +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );

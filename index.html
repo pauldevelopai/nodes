@@ -49,6 +49,16 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
 .card.soon h2{color:var(--text-secondary)}
 .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
 
+/* Tools & Agents grid (folded in from the old Tools & Agents page) */
+.tk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:8px}
+.tk-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;text-decoration:none;color:inherit;display:block;transition:.15s}
+.tk-card:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.tk-card .ico{font-size:26px;margin-bottom:8px}
+.tk-card h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.tk-card p{font-size:13.5px;color:var(--text-secondary);line-height:1.5}
+.tk-card.soon{opacity:.7}
+.tk-soon{font-size:10px;background:#fde68a;color:#92400e;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:700}
+
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .step{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
 .step .n{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
@@ -73,6 +83,10 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
 
     <!-- Node cards are rendered from /nodes/nodes.json — add a Node = add an entry there. -->
     <div id="node-list"></div>
+
+    <!-- Tools & Agents — folded in here from the old "Tools & Agents" page. Rendered
+         from /api/tool-kit when signed in; each card opens its workspace on the app. -->
+    <div id="toolkit-list"></div>
 
     <div class="sec-label">How Nodes work</div>
     <div class="steps">
@@ -157,6 +171,40 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
       .catch(() => {
         document.getElementById('node-list').innerHTML = '<p class="desc">Could not load the Node list. Refresh to try again.</p>';
       });
+
+    // ── Tools & Agents (folded in from the old Tools & Agents page) ──
+    // /api/tool-kit needs a signed-in session; if it 401s we simply render
+    // nothing (the chrome shows a sign-in prompt). Cards open the workspace on
+    // the React app at /tool/<slug>.
+    function toolCard(b) {
+      const soon = b.comingSoon
+        ? '<span class="tk-soon">coming soon</span>'
+        : '';
+      const inner =
+        '<div class="ico">' + esc(b.icon || '🛠') + '</div>'
+        + '<h3>' + esc(b.name) + soon + '</h3>'
+        + '<p>' + esc(b.description || '') + '</p>';
+      return b.comingSoon
+        ? '<div class="tk-card soon">' + inner + '</div>'
+        : '<a class="tk-card" href="/tool/' + esc(b.slug) + '">' + inner + '</a>';
+    }
+    fetch(BASE + '/api/tool-kit', { credentials: 'include', cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data) return; // not signed in — leave the section empty
+        const tools = data.tools || [], agents = data.agents || [];
+        let html = '';
+        if (tools.length) {
+          html += '<div class="sec-label">Operations tools</div>'
+            + '<div class="tk-grid">' + tools.map(toolCard).join('') + '</div>';
+        }
+        if (agents.length) {
+          html += '<div class="sec-label">Journalism agents</div>'
+            + '<div class="tk-grid">' + agents.map(toolCard).join('') + '</div>';
+        }
+        document.getElementById('toolkit-list').innerHTML = html;
+      })
+      .catch(() => {});
   </script>
 </body>
 </html>
