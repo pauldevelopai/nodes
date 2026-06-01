@@ -32,8 +32,8 @@ A conforming `node-<slug>` repo has:
 | `server-hosted.js` | **Hosted** entry. `await createHostedServer({ slug, productName, handlers, staticDir, nodeVersion, ...})`. Sets `process.env.GROUNDED_HOSTED="1"`. Exposes `npm run start:hosted`. |
 | `lib/handlers.js` | Your work, written against the host interface only (`host.db` / `host.store` / `host.ai` / `host.parse` / `host.log` / `host.feedback`). The same module is imported by both entries. |
 | `public/` | The dashboard. **Relative** asset + API paths (`<script src="app.js">`, `fetch("api/…")`) so it works at `/` locally and under `/nodes/<slug>/app/` hosted. |
-| `install.sh`, `install.ps1` | One-command installers. Copy from the template; change only `REPO=pauldevelopai/node-<slug>` and `DISPLAY_NAME`. |
-| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.10.0`). |
+| `install.sh`, `install.ps1` | One-command installers. Copy from the template and **rebrand FULLY** — not just `REPO=pauldevelopai/node-<slug>` and `DISPLAY_NAME`, but the header comment and the example URL line too (leftover template branding has shipped before). |
+| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.12.0` — check `node-verifier/package.json` for what the team actually runs). |
 | `NODE.md`, `README.md`, `CLAUDE.md` | Identity card, the newsroom setup guide, and the Claude-Code map. |
 
 **Hosted boot — the two shapes:**
@@ -57,10 +57,23 @@ await createHostedServer({
 
 `createHostedServer` provides everything else for free: tracker-cookie auth, a
 per-request newsroom-scoped host, the standard `/api/*` route map, an empty
-`node_<slug>_store` table, the "run it locally" footer, and — via runtime
-v0.10.0 — the shared **`/nodes/chrome.js`** chrome (Builder/Tracker/Monetisation
-nav + the feedback & AI-chat bubbles). You never hand-write nav in a Node; it's
-injected and stays consistent with every other surface.
+`node_<slug>_store` table, the "run it locally" footer (now with OS-by-OS
+step-by-step, via `chrome.js`), and the shared **`/nodes/chrome.js`** chrome
+(Builder/Tracker/Monetisation nav + feedback & AI-chat bubbles). You never
+hand-write nav in a Node; it's injected and stays consistent with every surface.
+
+**One must-have in `mountRoutes`:** add a no-cache header for the app shell, or
+browsers heuristically cache the chrome-injected `index.html` and your UI updates
+won't show until a hard refresh:
+```js
+mountRoutes: (app, { hostFor }) => {
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api/')) res.set('Cache-Control', 'no-cache');
+    next();
+  });
+  // ...your custom routes...
+}
+```
 
 ## 2. List it on the front door (always)
 
@@ -78,8 +91,8 @@ never hand-code cards.
 
 ## 3. Downloads work automatically
 
-A one-time **generic Caddy rule** maps `/nodes/<slug>/{mac,windows}` to
-`node-<slug>`'s raw `install.sh` / `install.ps1` on GitHub — so a new slug's
+A **generic Caddy rule** (installed 2026-06-01) maps `/nodes/<slug>/{mac,windows}`
+to `node-<slug>`'s raw `install.sh` / `install.ps1` on GitHub — so a new slug's
 download URLs work with no Caddy change. Confirm:
 
 ```bash
