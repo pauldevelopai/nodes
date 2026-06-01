@@ -338,4 +338,40 @@
     .then(function (u) { user = (u && (u.user || u)) || null; if (user && !user.email && !user.name) user = null; })
     .catch(function () { user = null; })
     .finally(function () { renderAuth(); });
+
+  // ── "Run locally" footer: add exact, non-technical first-run steps ─────────
+  // The runtime renders the #g-local footer with the two install one-liners; we
+  // attach the OS-by-OS step-by-step here so it stays identical to the front door
+  // without a runtime version bump. Runs on every hosted Node page.
+  (function enhanceLocalFooter() {
+    var foot = document.getElementById('g-local');
+    if (!foot || foot.querySelector('.gl-howto')) return;
+    var wrap = foot.querySelector('.gl-wrap');
+    if (!wrap) return;
+    var note = foot.querySelector('.gl-note');
+    var osCol = function (title, steps) {
+      return '<div><div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#64748B;margin-bottom:6px">' + title + '</div>'
+        + '<ol style="margin:0 0 0 16px;font-size:13.5px;color:#64748B;line-height:1.7">' + steps + '</ol></div>';
+    };
+    var d = document.createElement('details');
+    d.className = 'gl-howto';
+    d.style.cssText = 'margin:4px 0 2px;border:1px solid #E2E8F0;border-radius:6px;background:#fff';
+    d.innerHTML =
+      '<summary style="cursor:pointer;font-size:13.5px;font-weight:600;color:#3B82F6;padding:11px 14px">First time? Exact step-by-step</summary>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:2px 16px 10px">'
+      + osCol('On a Mac',
+          '<li>Press <b>Cmd + Space</b>, type <b>Terminal</b>, press <b>Enter</b>.</li>'
+        + '<li>Click <b>Copy</b> on the macOS line above.</li>'
+        + '<li>Click the Terminal window, paste with <b>Cmd + V</b>, press <b>Enter</b>.</li>'
+        + '<li>Wait a minute. When it says <b>is running</b>, your browser opens the app. Keep the Terminal window <b>open</b> while you use it.</li>')
+      + osCol('On Windows',
+          '<li>Click <b>Start</b>, type <b>PowerShell</b>, press <b>Enter</b>.</li>'
+        + '<li>Click <b>Copy</b> on the Windows line above.</li>'
+        + '<li>Right-click the PowerShell window to paste (or <b>Ctrl + V</b>), press <b>Enter</b>.</li>'
+        + '<li>Wait a minute. When it says <b>is running</b>, your browser opens the app. Keep the window <b>open</b> while you use it.</li>')
+      + '</div>'
+      + '<p style="font-size:13px;color:#64748B;padding:2px 16px 14px;margin:0">The first time, the app asks for an <b>AI key</b> — it shows you exactly where to get one (free to start), and the key stays on your own computer. To run it again another day, paste the same line — your data and settings are kept.</p>';
+    if (note && note.parentNode === wrap) wrap.insertBefore(d, note);
+    else wrap.appendChild(d);
+  })();
 })();
