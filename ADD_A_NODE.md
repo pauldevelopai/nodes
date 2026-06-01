@@ -68,6 +68,19 @@ ships `mountKeyUI()` (a first-run key gate + an "API key" Settings modal) and a
 endpoint before saving. Keep both — users never touch `.env`. Hosted Nodes are
 server-managed, so the modal just says so.
 
+**Shared newsroom profile — `host.profile` (standard; runtime ≥ v0.14.0).** One
+merged object per newsroom (location/audience/beats/about…), read/written by EVERY
+Node via the shared `grounded_newsroom_profile` table, seeded from the tracker
+Newsroom Profile. **Ground every AI call in it** so output fits the newsroom's real
+context, and contribute back anything you learn:
+```js
+const p = host.profile ? await host.profile.get() : null;  // {country, audience, about, ...}
+// prepend p.country / p.audience / p.about to your prompt
+await host.profile.set({ country, audience });             // shallow-merge; visible to all Nodes
+```
+Audience Signal writes it (its Newsroom tab); Election Watch reads it to ground
+verification. New Nodes inherit a `GET /api/profile` example from `node-template`.
+
 **One must-have in `mountRoutes`:** add a no-cache header for the app shell, or
 browsers heuristically cache the chrome-injected `index.html` and your UI updates
 won't show until a hard refresh:
