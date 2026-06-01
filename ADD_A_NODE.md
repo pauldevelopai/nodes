@@ -62,6 +62,12 @@ step-by-step, via `chrome.js`), and the shared **`/nodes/chrome.js`** chrome
 (Builder/Tracker/Monetisation nav + feedback & AI-chat bubbles). You never
 hand-write nav in a Node; it's injected and stays consistent with every surface.
 
+**API keys — browser-entered, never hand-edited (standard).** `node-template`
+ships `mountKeyUI()` (a first-run key gate + an "API key" Settings modal) and a
+`postSetup` that live-validates the key against the provider's `/v1/models`
+endpoint before saving. Keep both — users never touch `.env`. Hosted Nodes are
+server-managed, so the modal just says so.
+
 **One must-have in `mountRoutes`:** add a no-cache header for the app shell, or
 browsers heuristically cache the chrome-injected `index.html` and your UI updates
 won't show until a hard refresh:
