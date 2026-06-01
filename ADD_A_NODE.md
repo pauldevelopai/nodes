@@ -33,7 +33,7 @@ A conforming `node-<slug>` repo has:
 | `lib/handlers.js` | Your work, written against the host interface only (`host.db` / `host.store` / `host.ai` / `host.parse` / `host.log` / `host.feedback`). The same module is imported by both entries. |
 | `public/` | The dashboard. **Relative** asset + API paths (`<script src="app.js">`, `fetch("api/…")`) so it works at `/` locally and under `/nodes/<slug>/app/` hosted. |
 | `install.sh`, `install.ps1` | One-command installers. Copy from the template and **rebrand FULLY** — not just `REPO=pauldevelopai/node-<slug>` and `DISPLAY_NAME`, but the header comment and the example URL line too (leftover template branding has shipped before). |
-| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.12.0` — check `node-verifier/package.json` for what the team actually runs). |
+| `.env.example`, `package.json` | Config + `"start"` and `"start:hosted"` scripts; pin the runtime to the **current tag** (today `#v0.13.0` — check `node-verifier/package.json` for what the team actually runs). |
 | `NODE.md`, `README.md`, `CLAUDE.md` | Identity card, the newsroom setup guide, and the Claude-Code map. |
 
 **Hosted boot — the two shapes:**
