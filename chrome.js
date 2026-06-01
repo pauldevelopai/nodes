@@ -216,7 +216,7 @@
   // corner. Feedback is the corner button; chat stacks above it (matches the React app).
   var bubbles = el(
     '<div id="gc-bubbles">' +
-    '<button class="gc-bub" id="gc-chat-btn" title="Ask the AI-law assistant">' + ICON_CHAT + '</button>' +
+    '<button class="gc-bub" id="gc-chat-btn" title="Ask For Help">' + ICON_CHAT + '</button>' +
     '<button class="gc-bub" id="gc-fb-btn" title="Send feedback about Grounded">' + ICON_FB + '</button>' +
     '</div>'
   );
@@ -287,7 +287,7 @@
 
   var chatPanel = el(
     '<div class="gc-panel" id="gc-chat-panel">' +
-    '<div id="gc-chat-head">Ask about AI &amp; law<small>Answers are scoped to AI-law topics</small><button class="gc-x" type="button" style="background:none;border:none;cursor:pointer;font-size:16px;color:#718096">×</button></div>' +
+    '<div id="gc-chat-head">Ask For Help<small>Answers are scoped to AI-law topics</small><button class="gc-x" type="button" style="background:none;border:none;cursor:pointer;font-size:16px;color:#718096">×</button></div>' +
     '<div id="gc-chat-log"></div>' +
     '<div id="gc-chat-sugg"></div>' +
     '<form id="gc-chat-form"><input id="gc-chat-input" placeholder="Ask a question…" autocomplete="off"/><button class="gc-send" type="submit">Send</button></form>' +
