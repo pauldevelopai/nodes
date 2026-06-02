@@ -32,6 +32,14 @@
       "status": "live",
       "hosted": true,
       "desc": "One accountability view of what every reporter is publishing across Facebook, the website, TikTok and WhatsApp. Log output by hand or <em>paste the message a reporter sent at the end of the day</em> — AI turns it into entries — then track each person against their target and pair it with how the posts actually performed."
+    },
+    {
+      "slug": "aiready",
+      "repo": "node-aiready",
+      "name": "AI Ready Archive",
+      "status": "soon",
+      "hosted": false,
+      "desc": "Turn your archive into AI-discoverable formats — clean markdown, schema, <em>llms.txt</em> — with article-by-article control over what's exposed to AI crawlers, what feeds LLMs, and what stays a private internal search."
     }
   ]
 }
