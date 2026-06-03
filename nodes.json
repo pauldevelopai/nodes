@@ -37,8 +37,8 @@
       "slug": "aiready",
       "repo": "node-aiready",
       "name": "AI Ready Archive",
-      "status": "soon",
-      "hosted": false,
+      "status": "live",
+      "hosted": true,
       "desc": "Turn your archive into AI-discoverable formats — clean markdown, schema, <em>llms.txt</em> — with article-by-article control over what's exposed to AI crawlers, what feeds LLMs, and what stays a private internal search."
     }
   ]
