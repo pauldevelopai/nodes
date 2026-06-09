@@ -40,6 +40,14 @@
       "status": "live",
       "hosted": true,
       "desc": "Turn your archive into AI-discoverable formats — clean markdown, schema, <em>llms.txt</em> — with article-by-article control over what's exposed to AI crawlers, what feeds LLMs, and what stays a private internal search."
+    },
+    {
+      "slug": "salesrep",
+      "repo": "node-salesrep",
+      "name": "SalesRep",
+      "status": "live",
+      "hosted": true,
+      "desc": "Capture a senior ad-sales editor's playbook through a short AI interview — buyer types, pricing, objections, scripts, seasonal plays — then coach a junior salesperson from it for <em>prep</em>, <em>live</em> calls and <em>debriefs</em>. A calibration loop sharpens the model every time you mark its advice right, wrong or needs-refining."
     }
   ]
 }
