@@ -195,8 +195,12 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
       .then(r => r.json())
       .then(data => {
         const nodes = (data && data.nodes) || [];
-        const live = nodes.filter(n => n.status === 'live');
-        const soon = nodes.filter(n => n.status !== 'live');
+        // Product-aware: the GROUNDED newsroom front door shows only Nodes tagged
+        // 'grounded' (a missing products field defaults to grounded for back-compat).
+        // BAIR-only Nodes never appear here — the BE AI READY listing renders those.
+        const forGrounded = nodes.filter(n => !n.products || n.products.includes('grounded'));
+        const live = forGrounded.filter(n => n.status === 'live');
+        const soon = forGrounded.filter(n => n.status !== 'live');
         let html = '';
         if (live.length) html += '<div class="sec-label">Available now</div>' + live.map(nodeCard).join('');
         if (soon.length) html += '<div class="sec-label">Coming soon</div>' + soon.map(soonCard).join('');
