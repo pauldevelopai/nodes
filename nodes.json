@@ -59,7 +59,7 @@
       "slug": "bair-extract",
       "repo": "node-bair-extract",
       "name": "Extract PDF",
-      "status": "soon",
+      "status": "live",
       "hosted": true,
       "products": ["bair"],
       "desc": "Drop in a PDF — an invoice, a bill of quantities, a statement — and get <em>trusted</em> structured data back as Excel, with every risky cell flagged to check and nothing ever guessed. <em>BE AI READY.</em>"
