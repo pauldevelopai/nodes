@@ -1,5 +1,5 @@
 {
-  "_comment": "The Nodes registry — single source of truth for the front door. Add a Node = add an entry here, push, and `git -C /var/www/nodes pull` on the box. slug → install URLs (/nodes/<slug>/{mac,windows}) and hosted app (/nodes/<slug>/app/). repo → github.com/pauldevelopai/<repo>. status: 'live' (shows install + online) or 'soon'. hosted: true if it runs online on the box. 'desc' may contain simple inline HTML (e.g. <em>). 'products': which storefront(s) show this Node — ['grounded'] = the newsroom front door, ['bair'] = the BE AI READY listing, ['grounded','bair'] = both (one Node, two storefronts; never copied). A MISSING products field is treated as ['grounded'] for backward-compat. The same Node is reused across products by ADDING a tag — never by duplicating the entry.",
+  "_comment": "The Nodes registry — single source of truth for the front door. Add a Node = add an entry here, push, and `git -C /var/www/nodes pull` on the box. slug → install URLs (/nodes/<slug>/{mac,windows}) and hosted app (/nodes/<slug>/app/). repo → github.com/pauldevelopai/<repo>. status: 'live' (shows install + online) or 'soon'. hosted: true if it runs online on the box. 'desc' may contain simple inline HTML (e.g. <em>). 'products': which storefront(s) show this Node — ['grounded'] = the newsroom front door, ['bair'] = the BE AI READY listing, ['grounded','bair'] = both (one Node, two storefronts; never copied). A MISSING products field is treated as ['grounded'] for backward-compat. The same Node is reused across products by ADDING a tag — never by duplicating the entry. 'kind':'builtin' marks a Node that lives INSIDE the tracker app (not a separate node-<slug> repo / not hosted on the box) — it has an in-app 'href' instead of a 'repo', renders as a storefront card like any other, but has no download/hosted-app links. LeadFinder is the first of these.",
   "nodes": [
     {
       "slug": "analytics",
@@ -43,8 +43,8 @@
       "name": "AI Ready Archive",
       "status": "live",
       "hosted": true,
-      "products": ["grounded"],
-      "desc": "Turn your archive into AI-discoverable formats — clean markdown, schema, <em>llms.txt</em> — with article-by-article control over what's exposed to AI crawlers, what feeds LLMs, and what stays a private internal search."
+      "products": ["grounded", "bair"],
+      "desc": "Point it at your content — a folder from your computer, a Google Drive, a sitemap or pasted URLs — and it cleans and structures everything into AI-discoverable formats (clean markdown, schema, <em>llms.txt</em>), with page-by-page control over what AI crawlers, LLMs and agents may use and what stays private internal search."
     },
     {
       "slug": "salesrep",
@@ -63,6 +63,16 @@
       "hosted": true,
       "products": ["bair"],
       "desc": "Drop in a PDF — an invoice, a bill of quantities, a statement — and get <em>trusted</em> structured data back as Excel, with every risky cell flagged to check and nothing ever guessed. <em>BE AI READY.</em>"
+    },
+    {
+      "slug": "leadfinder",
+      "kind": "builtin",
+      "href": "/leadfinder",
+      "name": "LeadFinder",
+      "status": "live",
+      "hosted": false,
+      "products": ["bair"],
+      "desc": "Overnight tender watching. Pulls tenders from your sources, reads each one, and ranks them by how likely they are to convert — so your morning is a short list to act on, not a pile to sift."
     }
   ]
 }
