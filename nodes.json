@@ -43,7 +43,7 @@
       "name": "AI Ready Archive",
       "status": "live",
       "hosted": true,
-      "products": ["grounded", "bair"],
+      "products": ["grounded"],
       "desc": "Point it at your content — a folder from your computer, a Google Drive, a sitemap or pasted URLs — and it cleans and structures everything into AI-discoverable formats (clean markdown, schema, <em>llms.txt</em>), with page-by-page control over what AI crawlers, LLMs and agents may use and what stays private internal search."
     },
     {
