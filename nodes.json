@@ -68,7 +68,7 @@
       "slug": "voice",
       "repo": "node-voice",
       "name": "Newsroom Voice",
-      "status": "soon",
+      "status": "live",
       "hosted": true,
       "products": ["bair"],
       "desc": "Learns your newsroom's writing voice from your own past articles, then drafts new pieces in it. It only keeps the positions you've actually taken \u2014 each backed by a word-for-word quote from your text, nothing invented. <em>BE AI READY.</em>"
