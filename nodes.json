@@ -25,7 +25,7 @@
       "name": "Election Watch",
       "status": "live",
       "hosted": true,
-      "products": ["grounded"],
+      "products": ["grounded", "bair"],
       "desc": "AI-assisted claim verification and origin-tracking of suspicious content, tuned for the August 2026 Zambian elections. Verify claims against a corpus of past examples, and analyse where foreign-manufactured content came from."
     },
     {
