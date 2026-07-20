@@ -58,8 +58,14 @@ set("JWT_SECRET", t.JWT_SECRET);
 set("DATABASE_URL", t.DATABASE_URL);
 set("ANTHROPIC_API_KEY", t.ANTHROPIC_API_KEY);
 set("PORT", process.env.NODE_PORT);
+// Optional shared secrets — copied only when present in the tracker .env, so this
+// stays harmless for Nodes that do not use them. KNOWLEDGE_ENCRYPTION_KEY is needed by
+// Green Index (per-tenant encryption of claim quotes/notes/reports — and it MUST match
+// the tracker\x27s key so migrated data decrypts). GOOGLE_API_KEY enables Drive import.
+const extra = [];
+for (const k of ["KNOWLEDGE_ENCRYPTION_KEY", "GOOGLE_API_KEY"]) if (t[k]) { set(k, t[k]); extra.push(k); }
 fs.writeFileSync(".env", env);
-console.log("    .env written (JWT_SECRET, DATABASE_URL, ANTHROPIC_API_KEY, PORT=" + process.env.NODE_PORT + ")");
+console.log("    .env written (JWT_SECRET, DATABASE_URL, ANTHROPIC_API_KEY" + (extra.length ? ", " + extra.join(", ") : "") + ", PORT=" + process.env.NODE_PORT + ")");
 '
 
 # 3. Install + run under pm2

@@ -47,6 +47,15 @@
       "desc": "Point it at your content — a folder from your computer, a Google Drive, a sitemap or pasted URLs — and it cleans and structures everything into AI-discoverable formats (clean markdown, schema, <em>llms.txt</em>), with page-by-page control over what AI crawlers, LLMs and agents may use and what stays private internal search."
     },
     {
+      "slug": "greenindex",
+      "repo": "node-greenindex",
+      "name": "Green Index",
+      "status": "live",
+      "hosted": true,
+      "products": ["grounded"],
+      "desc": "Test what a company <em>claims</em> against what your reporting and independent sources show it has actually <em>done</em>. Group evidence into <em>mines</em> — the company's own claims, your reporting, external sources, and the criteria you judge against — and Green Index extracts each checkable claim, tests it, and surfaces where they don't match, rated against a weighted framework. Nothing leaves your newsroom."
+    },
+    {
       "slug": "salesrep",
       "repo": "node-salesrep",
       "name": "SalesRep",
