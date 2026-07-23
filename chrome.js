@@ -32,10 +32,20 @@
   var SHOW_NAV = cfg.nav !== false; // default on
 
   var BUILDER = [
-    { label: 'Nodes', href: '/nodes/' },
+    // Nodes lives in the Tools pillar tab — not duplicated here (matches the SPA nav).
     { label: 'Tool Search', href: '/tools/' },
     { label: 'Workflow builder', href: '/builder' },
     { label: 'Monetisation', href: '/monetisation' },
+  ];
+  // The six BE AI READY pillar tabs, mirroring the Grounded SPA top nav
+  // (client/src/pages/public/PublicLayout.jsx → VISIBLE_PILLARS).
+  var PILLARS = [
+    { label: 'Knowledge', href: '/pillar/knowledge' },
+    { label: 'Training', href: '/pillar/training' },
+    { label: 'Governance', href: '/pillar/governance' },
+    { label: 'Cyber Security', href: '/pillar/data-security' },
+    { label: 'Tools', href: '/pillar/productivity' },
+    { label: 'Strategy', href: '/pillar/strategy' },
   ];
   var TRACKER = [
     { label: 'Dashboard', href: '/legal/dashboard' },
@@ -57,7 +67,7 @@
     'When does the EU AI Act take effect?',
     'What is the Colorado AI Act?',
   ];
-  var TERRACOTTA = '#c4761b';
+  var TERRACOTTA = '#c75b39';
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function el(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
@@ -66,25 +76,25 @@
   var css = document.createElement('style');
   css.id = 'gc-style';
   css.textContent = [
-    "#gc-nav{display:block;border-bottom:1px solid #E2E8F0;background:#fff;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.45;position:sticky;top:0;z-index:9000}",
+    "#gc-nav{display:block;border-bottom:2px solid #c75b39;background:linear-gradient(180deg,#1c1b1a 0%,#232120 100%);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.45;position:sticky;top:0;z-index:9000}",
     '#gc-nav *,#gc-bubbles *,.gc-panel *{box-sizing:border-box}',
     '#gc-nav .gc-bar{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}',
-    '#gc-nav .gc-brand{text-decoration:none;color:#1A202C;display:flex;flex-direction:column;line-height:1.2}',
-    '#gc-nav .gc-brand b{font-size:20px;font-weight:700;letter-spacing:-0.01em}',
-    '#gc-nav .gc-brand span{font-size:11px;color:#718096;font-weight:500}',
+    '#gc-nav .gc-brand{text-decoration:none;color:#fff;display:flex;flex-direction:column;line-height:1.2}',
+    '#gc-nav .gc-brand b{font-size:20px;font-weight:800;letter-spacing:-0.01em}',
+    '#gc-nav .gc-brand span{font-size:11px;color:#c75b39;font-weight:600}',
     '#gc-nav .gc-links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}',
-    '#gc-nav .gc-links>a,#gc-nav .gc-dd>button{padding:8px 12px;border-radius:6px;font-weight:500;font-size:14px;font-family:inherit;color:#718096;text-decoration:none;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:4px}',
-    '#gc-nav .gc-links>a:hover,#gc-nav .gc-dd>button:hover{color:#1A202C}',
-    '#gc-nav .gc-links>a.active,#gc-nav .gc-dd>button.active{font-weight:600;color:#1A202C;background:#EEF2FF}',
+    '#gc-nav .gc-links>a,#gc-nav .gc-dd>button{padding:8px 12px;border-radius:6px;font-weight:500;font-size:14px;font-family:inherit;color:#e7e0d8;text-decoration:none;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:4px}',
+    '#gc-nav .gc-links>a:hover,#gc-nav .gc-dd>button:hover{color:#fff}',
+    '#gc-nav .gc-links>a.active,#gc-nav .gc-dd>button.active{font-weight:600;color:#fff;background:rgba(255,255,255,0.10)}',
     '#gc-nav .gc-dd{position:relative}',
     '#gc-nav .gc-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:180px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:9001;display:none;flex-direction:column}',
     '#gc-nav .gc-menu.open{display:flex}',
     '#gc-nav .gc-menu a{padding:8px 12px;font-weight:500;font-size:14px;font-family:inherit;color:#1A202C;text-decoration:none;border-radius:6px;white-space:nowrap}',
-    '#gc-nav .gc-menu a:hover{background:#EEF2FF}',
-    '#gc-nav .gc-auth{display:flex;align-items:center;gap:10px;padding-left:10px;margin-left:4px;border-left:1px solid #E2E8F0}',
-    '#gc-nav .gc-email{font-size:13px;color:#1A202C;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '#gc-nav .gc-btn{font-weight:500;font-size:13px;font-family:inherit;color:#718096;background:none;border:1px solid #E2E8F0;border-radius:6px;padding:7px 12px;cursor:pointer;text-decoration:none}',
-    '#gc-nav .gc-btn:hover{color:#1A202C;border-color:#CBD5E1}',
+    '#gc-nav .gc-menu a:hover{background:#efe9e1}',
+    '#gc-nav .gc-auth{display:flex;align-items:center;gap:10px;padding-left:10px;margin-left:4px;border-left:1px solid rgba(255,255,255,0.15)}',
+    '#gc-nav .gc-email{font-size:13px;color:#f2ede7;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '#gc-nav .gc-btn{font-weight:500;font-size:13px;font-family:inherit;color:#e7e0d8;background:none;border:1px solid rgba(231,224,216,0.35);border-radius:6px;padding:7px 12px;cursor:pointer;text-decoration:none}',
+    '#gc-nav .gc-btn:hover{color:#fff;border-color:rgba(231,224,216,0.6)}',
     // bubbles
     '#gc-bubbles{position:fixed;right:20px;bottom:20px;z-index:99990;display:flex;flex-direction:column;gap:12px;align-items:flex-end}',
     '#gc-bubbles .gc-bub{width:52px;height:52px;border-radius:50%;background:' + TERRACOTTA + ';color:#fff;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}',
@@ -149,7 +159,7 @@
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
       ddHtml('Builder', BUILDER, builderActive, 'builder') +
       ddHtml('AI Policies', TRACKER, trackerActive, 'tracker') +
-      ddHtml('Training', TRAINING, trainingActive, 'training') +
+      PILLARS.map(function (p) { return '<a href="' + esc(p.href) + '" class="' + (path === p.href ? 'active' : '') + '">' + esc(p.label) + '</a>'; }).join('') +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );
