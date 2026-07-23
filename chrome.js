@@ -157,8 +157,8 @@
       '<a class="gc-brand" href="/"><b>Grounded</b><span>Newsroom-owned AI &middot; by Develop&nbsp;AI</span></a>' +
       '<div class="gc-links">' +
       '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
-      ddHtml('Builder', BUILDER, builderActive, 'builder') +
-      ddHtml('AI Policies', TRACKER, trackerActive, 'tracker') +
+      // The nav is the six pillars only — Builder's items are folded into the Tools
+      // pillar and AI Policies' into Governance (matches the SPA + BeAIReadyPillar).
       PILLARS.map(function (p) { return '<a href="' + esc(p.href) + '" class="' + (path === p.href ? 'active' : '') + '">' + esc(p.label) + '</a>'; }).join('') +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
