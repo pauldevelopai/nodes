@@ -27,12 +27,48 @@ TRACKER_ENV="${TRACKER_ENV:-/home/ubuntu/tracker/.env}"
 echo "==> Hosted Node '${SLUG}' (repo ${REPO}) → port ${PORT}"
 
 # 1. Code
+#
+# Most Node repos are public, so a plain HTTPS clone works. PRIVATE ones (e.g.
+# node-leadfinder, which carries client-identifying detail) need read access on
+# the box. Two supported ways, tried in order:
+#
+#   a. an SSH deploy key  — add the box's public key as a read-only deploy key on
+#      the repo (GitHub → repo → Settings → Deploy keys). Preferred: it is scoped
+#      to one repo, does not expire, and never lands in .git/config.
+#   b. GITHUB_TOKEN in the environment — a fine-grained PAT with read access.
+#      Used only for the clone; the remote is rewritten to the clean URL
+#      afterwards so the token is NOT persisted to disk.
+#
+# A private repo with neither configured fails here with a clear message rather
+# than a bare "repository not found" from git.
 if [ -d "$DIR/.git" ]; then
   echo "    updating $DIR"
-  git -C "$DIR" pull --ff-only
+  # An SSH remote (deploy key) just works. A token-cloned repo has a CLEAN https
+  # remote by design — no credentials on disk — so a private repo needs the token
+  # supplied again here, passed as a one-off URL rather than persisted.
+  if [ -n "${GITHUB_TOKEN:-}" ] && git -C "$DIR" remote get-url origin | grep -q '^https://github\.com/'; then
+    git -C "$DIR" pull --ff-only "https://x-access-token:${GITHUB_TOKEN}@github.com/pauldevelopai/${REPO}.git" HEAD
+  else
+    git -C "$DIR" pull --ff-only
+  fi
 else
   echo "    cloning into $DIR"
-  git clone "https://github.com/pauldevelopai/${REPO}.git" "$DIR"
+  if ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    echo "    using SSH deploy key"
+    git clone "git@github.com:pauldevelopai/${REPO}.git" "$DIR"
+  elif [ -n "${GITHUB_TOKEN:-}" ]; then
+    echo "    using GITHUB_TOKEN"
+    # Token stays out of .git/config: clone with it, then reset the remote.
+    git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/pauldevelopai/${REPO}.git" "$DIR" \
+      && git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
+  else
+    git clone "https://github.com/pauldevelopai/${REPO}.git" "$DIR" || {
+      echo "    ! clone failed. If ${REPO} is PRIVATE the box needs read access:"
+      echo "      - add the box's ~/.ssh/id_*.pub as a deploy key on the repo, or"
+      echo "      - re-run with:  GITHUB_TOKEN=<read-only PAT> bash deploy-node.sh ${SLUG} ${PORT}"
+      exit 1
+    }
+  fi
 fi
 cd "$DIR"
 
