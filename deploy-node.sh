@@ -106,10 +106,30 @@ else
         echo "      - re-run and paste a fine-grained token (Contents: Read-only)"
         exit 1
       fi
-      git clone "https://x-access-token:${TOKEN_INPUT}@github.com/pauldevelopai/${REPO}.git" "$DIR" || {
-        echo "    ! that token did not work. Check it is not expired, is pasted whole"
-        echo "      (~93 chars), has resource owner 'pauldevelopai', repository"
-        echo "      '${REPO}', and Repository permissions -> Contents: Read-only."
+      # Ask the API what this token can actually do BEFORE handing it to git.
+      # git's transport reports every permission problem as "Write access to
+      # repository not granted" — even for a clone, which needs only read — so
+      # on its own it cannot tell you whether the token is expired, missing the
+      # Contents permission, or simply not scoped to this repository.
+      code=$(curl -s -o /dev/null -w '%{http_code}' \
+        -H "Authorization: Bearer ${TOKEN_INPUT}" \
+        -H "Accept: application/vnd.github+json" \
+        "https://api.github.com/repos/pauldevelopai/${REPO}" || echo 000)
+      case "$code" in
+        200) ;;
+        401) echo "    ! token rejected (401) — expired, revoked, or not pasted whole."; exit 1 ;;
+        403) echo "    ! token understood but forbidden (403) — set Repository permissions"
+             echo "      -> Contents: Read-only. A token with no permissions set has none."; exit 1 ;;
+        404) echo "    ! token cannot see ${REPO} (404). Under 'Repository access' pick"
+             echo "      'Only select repositories' and include ${REPO}. If the repo is"
+             echo "      org-owned the token may also be awaiting owner approval."; exit 1 ;;
+        000) echo "    ! could not reach api.github.com to check the token."; exit 1 ;;
+        *)   echo "    ! unexpected ${code} from api.github.com checking the token."; exit 1 ;;
+      esac
+      # Fine-grained PATs authenticate as the token itself. 'x-access-token' is
+      # the GitHub *App* installation-token convention and is not right here.
+      git clone "https://${TOKEN_INPUT}@github.com/pauldevelopai/${REPO}.git" "$DIR" || {
+        echo "    ! the token has read access but the clone still failed — see git's error above."
         exit 1
       }
       git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
