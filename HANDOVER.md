@@ -87,6 +87,34 @@ Full detail and copy-paste commands are in **`ADD_A_NODE.md`** (same folder). Th
    installer; `…/nodes/<slug>/app/` 302s to login (gated). Sign in and use it.
 6. **It's now in the Nodes admin** like the others (usage + per-newsroom feedback).
 
+### Picking the port (step 4) — check the box, don't guess
+
+Hosted Nodes on the box listen on **3002-3009**. Verified 2026-07-29:
+
+| Port | Node | | Port | Node |
+|---|---|---|---|---|
+| 3002 | analytics | | 3007 | salesrep |
+| 3004 | verifier | | 3008 | greenindex |
+| 3005 | progress | | 3009 | leadfinder |
+| 3006 | aiready | | 4106 | bair-extract |
+
+**Do not infer a free port from the local dev range.** `start.sh` runs the LOCAL
+hosted Nodes on 4101-4105 (the tracker's `docs/RESUME.md`) — a different machine
+with a different allocation. Reading that as the box's list is what put
+LeadFinder on an already-occupied 4106 and crash-looped it on EADDRINUSE.
+
+The only reliable check is the box itself:
+
+```bash
+ss -lptn | grep -E ':(30[0-9][0-9]|41[0-9][0-9]) '
+for d in /home/ubuntu/node-*/; do echo "$(basename $d) $(grep -hs '^PORT=' $d/.env)"; done
+```
+
+**Known conflict:** `node-voice` is also configured for 4106, which
+`bair-extract` holds, so it has been crash-looping on EADDRINUSE — that is what
+its enormous pm2 restart count is. Give it a free port when someone next touches
+it.
+
 ---
 
 ## The two storage patterns (pick one per Node)

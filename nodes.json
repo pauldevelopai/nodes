@@ -84,11 +84,10 @@
     },
     {
       "slug": "leadfinder",
-      "kind": "builtin",
-      "href": "/leadfinder",
+      "repo": "node-leadfinder",
       "name": "LeadFinder",
       "status": "live",
-      "hosted": false,
+      "hosted": true,
       "products": ["bair"],
       "desc": "Overnight tender watching. Pulls tenders from your sources, reads each one, and ranks them by how likely they are to convert — so your morning is a short list to act on, not a pile to sift."
     }
