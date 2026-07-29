@@ -86,12 +86,35 @@ else
     # Token stays out of .git/config: clone with it, then reset the remote.
     git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
   else
-    git clone "https://github.com/pauldevelopai/${REPO}.git" "$DIR" || {
-      echo "    ! clone failed. If ${REPO} is PRIVATE the box needs read access:"
-      echo "      - add the box's ~/.ssh/id_*.pub as a deploy key on the repo, or"
-      echo "      - re-run with:  GITHUB_TOKEN=<read-only PAT> bash deploy-node.sh ${SLUG} ${PORT}"
-      exit 1
-    }
+    if ! git clone "https://github.com/pauldevelopai/${REPO}.git" "$DIR" 2>/dev/null; then
+      echo "    ${REPO} is not publicly readable — it needs credentials."
+      # Ask for the token here rather than making the operator pass it on the
+      # command line. Putting a secret in an env-var prefix is easy to get wrong
+      # in ways that fail obscurely: one space after the '=' and the shell tries
+      # to EXECUTE the token; paste it over a placeholder and the prefix doubles;
+      # either way it lands in shell history. read -s has none of those edges —
+      # nothing is echoed, nothing is stored, and the value cannot be mis-quoted.
+      if [ -t 0 ]; then
+        printf '    paste a read-only token (input hidden), or Enter to abort: '
+        read -rs TOKEN_INPUT; echo
+      else
+        TOKEN_INPUT=''
+      fi
+      if [ -z "$TOKEN_INPUT" ]; then
+        echo "    ! aborted. Give the box read access to ${REPO} one of two ways:"
+        echo "      - add ~/.ssh/id_ed25519.pub as a deploy key on the repo, or"
+        echo "      - re-run and paste a fine-grained token (Contents: Read-only)"
+        exit 1
+      fi
+      git clone "https://x-access-token:${TOKEN_INPUT}@github.com/pauldevelopai/${REPO}.git" "$DIR" || {
+        echo "    ! that token did not work. Check it is not expired, is pasted whole"
+        echo "      (~93 chars), has resource owner 'pauldevelopai', repository"
+        echo "      '${REPO}', and Repository permissions -> Contents: Read-only."
+        exit 1
+      }
+      git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
+      unset TOKEN_INPUT
+    fi
   fi
 fi
 cd "$DIR"
