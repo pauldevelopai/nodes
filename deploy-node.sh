@@ -64,9 +64,27 @@ else
     git clone "git@github.com:pauldevelopai/${REPO}.git" "$DIR"
   elif [ -n "${GITHUB_TOKEN:-}" ]; then
     echo "    using GITHUB_TOKEN"
+    # Catch the copy-paste slip that costs a round trip: a token pasted over a
+    # "github_pat_..." placeholder ends up with the prefix twice. Cheaper to say
+    # so here than to let GitHub answer with a generic auth failure.
+    case "$GITHUB_TOKEN" in
+      github_pat_github_pat_*|ghp_ghp_*)
+        echo "    ! GITHUB_TOKEN has its prefix twice ('${GITHUB_TOKEN:0:22}...')."
+        echo "      Paste the token on its own — it already starts with github_pat_ / ghp_."
+        exit 1 ;;
+    esac
+    # NB: this must NOT be an '&&' list. set -e ignores a failure in any command
+    # of an AND-OR list bar the last, so a failed clone here used to fall through
+    # to the cd below and report a missing directory instead of an auth error.
+    git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/pauldevelopai/${REPO}.git" "$DIR" || {
+      echo "    ! clone failed with GITHUB_TOKEN. Check the token is:"
+      echo "      - not expired, and pasted whole (fine-grained tokens are ~93 chars)"
+      echo "      - resource owner 'pauldevelopai', repository access '${REPO}'"
+      echo "      - Repository permissions -> Contents: Read-only"
+      exit 1
+    }
     # Token stays out of .git/config: clone with it, then reset the remote.
-    git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/pauldevelopai/${REPO}.git" "$DIR" \
-      && git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
+    git -C "$DIR" remote set-url origin "https://github.com/pauldevelopai/${REPO}.git"
   else
     git clone "https://github.com/pauldevelopai/${REPO}.git" "$DIR" || {
       echo "    ! clone failed. If ${REPO} is PRIVATE the box needs read access:"
