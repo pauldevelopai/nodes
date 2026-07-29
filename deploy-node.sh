@@ -18,6 +18,12 @@
 # ADD_A_NODE.md.
 set -euo pipefail
 
+# Never let git stop and ask for a username/password. On a private repo without
+# credentials it otherwise blocks the whole deploy on an interactive prompt that
+# cannot succeed anyway (GitHub dropped password auth for git operations), which
+# reads as a hang rather than as the auth failure it is. Fail fast instead.
+export GIT_TERMINAL_PROMPT=0
+
 SLUG="${1:?usage: deploy-node.sh <slug> <port>}"
 PORT="${2:?usage: deploy-node.sh <slug> <port>}"
 REPO="node-${SLUG}"
