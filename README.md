@@ -12,6 +12,31 @@ Each Node lives in its **own** repo (e.g.
 [`node-analytics`](https://github.com/pauldevelopai/node-analytics)). This repo
 is only the front door — no Node code here.
 
+## Running a Node with an AI coding agent (`/grounded`)
+
+Every Node repo ships an agent setup playbook — `.claude/commands/grounded.md`
+(the `/grounded` command in Claude Code) plus an `AGENTS.md` pointer for Codex
+and other agents. It clones (if needed), installs, launches, verifies the app
+answers, and hands the user plain run instructions. The AI key is entered in
+the app's own browser screen — never in the chat.
+
+Two ways to use it:
+
+1. **Already have the repo?** Open your agent inside the Node folder and type
+   `/grounded` (Codex: say "set up and run this Node").
+2. **One-step from anywhere:** install the command globally once —
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/pauldevelopai/node-template/main/.claude/commands/grounded.md --create-dirs -o ~/.claude/commands/grounded.md
+   ```
+
+   — then from any folder: `/grounded https://github.com/pauldevelopai/node-<slug>`
+   (a bare `node-<slug>` works too).
+
+The playbook is generic; the canonical copy lives in `node-template`, so every
+Node scaffolded from it (see `ADD_A_NODE.md`) inherits it. Newsrooms without an
+agent use the one-command installers above instead — same result.
+
 ## Files
 
 | File | Purpose |
