@@ -80,6 +80,11 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
 .howto ol{margin:0 0 0 16px;font-size:13.5px;color:var(--text-secondary);line-height:1.7}
 .howto ol b{color:var(--text-primary)}
 .howto-note{font-size:13px;color:var(--text-secondary);padding:2px 16px 14px}
+.howto-agent{padding:10px 16px 4px;border-top:1px solid var(--border-color);margin-top:4px}
+.howto-agent ol{margin:0 0 0 16px;font-size:13.5px;color:var(--text-secondary);line-height:1.7}
+.howto-agent ol b{color:var(--text-primary)}
+.howto-agent code.cmd{display:block;margin:6px 0;font-size:12px}
+.howto-agent .copy{padding:6px 10px;font-size:11px}
 @media(max-width:720px){.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.hero h1{font-size:26px}.howto-cols{grid-template-columns:1fr}}
 </style>
 <script defer src="/nodes/chrome.js"></script>
@@ -150,6 +155,13 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         +   '<li>Wait a minute. When it says <b>is running</b>, your browser opens the dashboard. Keep the window <b>open</b> while you use the app.</li>'
         + '</ol></div>'
         + '</div>'
+        + '<div class="howto-agent"><div class="howto-os">With an AI coding agent (Claude Code, Codex…)</div><ol>'
+        +   '<li>One-time setup for <b>Claude Code</b> — paste this in your terminal to add the <b>/grounded</b> command:'
+        +     '<code class="cmd" id="inst-' + esc(n.slug) + '">curl -fsSL https://raw.githubusercontent.com/pauldevelopai/node-template/main/.claude/commands/grounded.md --create-dirs -o ~/.claude/commands/grounded.md</code>'
+        +     '<button class="copy" data-copy="inst-' + esc(n.slug) + '">Copy</button></li>'
+        +   '<li>Start <b>claude</b> in any folder and paste the <b>AI agent</b> line above — it downloads, installs, launches, and then explains how to use it.</li>'
+        +   '<li><b>Codex</b> or another agent? Get the code from GitHub (link below) and tell it: <b>&ldquo;set up and run this Node&rdquo;</b> — the repo carries the same instructions.</li>'
+        + '</ol></div>'
         + '<p class="howto-note">The first time, the app may ask for an <b>AI key</b> — it shows you exactly where to get one (free to start), and the key stays on your own computer. '
         + 'To run it again another day, paste the same line — your data and settings are kept. '
         + 'If a step looks wrong, email Paul a screenshot of the window and he\'ll get you unstuck.</p>'
@@ -163,7 +175,7 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
           + '<div class="online-note">Sign in with your Grounded account and use it in your browser — nothing to install.</div>'
           + '<div class="run-label">Or run it on your own computer:</div>'
         : '<div class="run-label">Run it on your own computer:</div>';
-      const macId = 'cmd-' + n.slug + '-mac', winId = 'cmd-' + n.slug + '-win';
+      const macId = 'cmd-' + n.slug + '-mac', winId = 'cmd-' + n.slug + '-win', agentId = 'cmd-' + n.slug + '-agent';
       return '<article class="card">'
         + '<h2>' + esc(n.name) + '</h2>'
         + '<p class="desc">' + (n.desc || '') + '</p>'
@@ -171,6 +183,7 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         + '<div class="run">'
         + '<div class="run-row"><span class="os">macOS</span><code class="cmd" id="' + macId + '">curl -fsSL ' + BASE + '/nodes/' + esc(n.slug) + '/mac | bash</code><button class="copy" data-copy="' + macId + '">Copy</button></div>'
         + '<div class="run-row"><span class="os">Windows</span><code class="cmd" id="' + winId + '">irm ' + BASE + '/nodes/' + esc(n.slug) + '/windows | iex</code><button class="copy" data-copy="' + winId + '">Copy</button></div>'
+        + '<div class="run-row"><span class="os">AI agent</span><code class="cmd" id="' + agentId + '">/grounded https://github.com/pauldevelopai/' + esc(n.repo) + '</code><button class="copy" data-copy="' + agentId + '">Copy</button></div>'
         + '</div>'
         + howto(n)
         + '<p class="own">Nothing to install by hand. Want to change how it works? '
