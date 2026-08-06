@@ -20,18 +20,25 @@ and other agents. It clones (if needed), installs, launches, verifies the app
 answers, and hands the user plain run instructions. The AI key is entered in
 the app's own browser screen — never in the chat.
 
-Two ways to use it:
+**Zero setup** — the instructions ship inside every repo, so cloning IS the install:
 
-1. **Already have the repo?** Open your agent inside the Node folder and type
-   `/grounded` (Codex: say "set up and run this Node").
-2. **One-step from anywhere:** install the command globally once —
+```bash
+git clone https://github.com/pauldevelopai/node-<slug> && cd node-<slug> && claude
+```
 
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/pauldevelopai/node-template/main/.claude/commands/grounded.md --create-dirs -o ~/.claude/commands/grounded.md
-   ```
+then type `/grounded`. (Codex: run `codex` instead of `claude`, then say
+"set up and run this Node" — it follows `AGENTS.md` to the same playbook.)
 
-   — then from any folder: `/grounded https://github.com/pauldevelopai/node-<slug>`
-   (a bare `node-<slug>` works too).
+**Power users** — install the command globally once:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/pauldevelopai/node-template/main/.claude/commands/grounded.md --create-dirs -o ~/.claude/commands/grounded.md
+```
+
+then `/grounded https://github.com/pauldevelopai/node-<slug>` works from any
+folder, no clone first (a bare `node-<slug>` works too). Codex CLI users can
+install the same file to `~/.codex/prompts/grounded.md` for a `/grounded`
+prompt there.
 
 The playbook is generic; the canonical copy lives in `node-template`, so every
 Node scaffolded from it (see `ADD_A_NODE.md`) inherits it. Newsrooms without an

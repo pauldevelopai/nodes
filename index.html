@@ -36,7 +36,7 @@ main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 24px}
 .online-note{margin-top:8px;font-size:13px;color:var(--text-secondary)}
 .run-label{margin-top:24px;margin-bottom:2px;font-size:13px;font-weight:600;color:var(--text-secondary)}
 .run{margin-top:18px;display:grid;gap:8px}
-.run-row{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:center}
+.run-row{display:grid;grid-template-columns:96px 1fr auto;gap:10px;align-items:center}
 .os{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
 code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--code-bg);color:var(--code-text);border-radius:var(--radius);padding:11px 13px;overflow-x:auto;white-space:nowrap}
 .copy{font-family:inherit;font-size:12px;font-weight:500;background:var(--card-bg);color:var(--text-secondary);border:1px solid var(--border-color);border-radius:var(--radius);padding:10px 13px;cursor:pointer;transition:.15s}
@@ -155,12 +155,15 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         +   '<li>Wait a minute. When it says <b>is running</b>, your browser opens the dashboard. Keep the window <b>open</b> while you use the app.</li>'
         + '</ol></div>'
         + '</div>'
-        + '<div class="howto-agent"><div class="howto-os">With an AI coding agent (Claude Code, Codex…)</div><ol>'
-        +   '<li>One-time setup for <b>Claude Code</b> — paste this in your terminal to add the <b>/grounded</b> command:'
+        + '<div class="howto-agent"><div class="howto-os">With Claude Code or Codex — no setup needed</div><ol>'
+        +   '<li>You need <b>git</b> plus <b>Claude Code</b> (or <b>Codex</b>) installed.</li>'
+        +   '<li>Click <b>Copy</b> on the <b>Claude Code &amp; Codex</b> line above, paste it in your terminal, press <b>Enter</b>. It downloads the code and opens <b>Claude Code</b> inside it.</li>'
+        +   '<li>Type <b>/grounded</b> and press <b>Enter</b> — the agent installs everything, starts the app, opens the dashboard, and explains how to use it. The instructions ship inside the code, so there is nothing to set up first.</li>'
+        +   '<li>Using <b>Codex</b>? In step 2 the line ends with <b>claude</b> — run <b>codex</b> there instead, then say: <b>&ldquo;set up and run this Node&rdquo;</b>. Same result.</li>'
+        +   '<li>Power user? Install the command once —'
         +     '<code class="cmd" id="inst-' + esc(n.slug) + '">curl -fsSL https://raw.githubusercontent.com/pauldevelopai/node-template/main/.claude/commands/grounded.md --create-dirs -o ~/.claude/commands/grounded.md</code>'
-        +     '<button class="copy" data-copy="inst-' + esc(n.slug) + '">Copy</button></li>'
-        +   '<li>Start <b>claude</b> in any folder and paste the <b>AI agent</b> line above — it downloads, installs, launches, and then explains how to use it.</li>'
-        +   '<li><b>Codex</b> or another agent? Get the code from GitHub (link below) and tell it: <b>&ldquo;set up and run this Node&rdquo;</b> — the repo carries the same instructions.</li>'
+        +     '<button class="copy" data-copy="inst-' + esc(n.slug) + '">Copy</button>'
+        +     ' — and from then on <b>/grounded &lt;any Node&rsquo;s GitHub URL&gt;</b> works from any folder, no clone first.</li>'
         + '</ol></div>'
         + '<p class="howto-note">The first time, the app may ask for an <b>AI key</b> — it shows you exactly where to get one (free to start), and the key stays on your own computer. '
         + 'To run it again another day, paste the same line — your data and settings are kept. '
@@ -183,7 +186,7 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
         + '<div class="run">'
         + '<div class="run-row"><span class="os">macOS</span><code class="cmd" id="' + macId + '">curl -fsSL ' + BASE + '/nodes/' + esc(n.slug) + '/mac | bash</code><button class="copy" data-copy="' + macId + '">Copy</button></div>'
         + '<div class="run-row"><span class="os">Windows</span><code class="cmd" id="' + winId + '">irm ' + BASE + '/nodes/' + esc(n.slug) + '/windows | iex</code><button class="copy" data-copy="' + winId + '">Copy</button></div>'
-        + '<div class="run-row"><span class="os">AI agent</span><code class="cmd" id="' + agentId + '">/grounded https://github.com/pauldevelopai/' + esc(n.repo) + '</code><button class="copy" data-copy="' + agentId + '">Copy</button></div>'
+        + '<div class="run-row"><span class="os">Claude Code &amp; Codex</span><code class="cmd" id="' + agentId + '">git clone https://github.com/pauldevelopai/' + esc(n.repo) + ' && cd ' + esc(n.repo) + ' && claude</code><button class="copy" data-copy="' + agentId + '">Copy</button></div>'
         + '</div>'
         + howto(n)
         + '<p class="own">Nothing to install by hand. Want to change how it works? '
