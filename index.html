@@ -8,27 +8,33 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --content-bg:#F8FAFC; --card-bg:#FFFFFF; --text-primary:#1A202C; --text-secondary:#718096;
-  --border-color:#E2E8F0; --accent:#3B82F6; --accent-hover:#2563EB; --success:#10B981;
-  --radius:6px; --shadow:0 1px 3px rgba(0,0,0,0.08); --active-bg:#EEF2FF;
-  --code-bg:#1E1E2E; --code-text:#E2E8F0;
+  /* The Develop AI system, mirroring grounded2026/client/src/index.css and the
+     nav that chrome.js injects above. Was a Tailwind-ish #3B82F6 on #F8FAFC in
+     Inter, which left this page looking like a different product from the navy
+     header sitting on top of it. */
+  --content-bg:#F4F6FA; --card-bg:#FFFFFF; --text-primary:#1B1C3D; --text-secondary:#5A6180;
+  --border-color:#DDE3EE; --accent:#4673AF; --accent-hover:#3A6099; --success:#10B981;
+  --radius:4px; --shadow:0 1px 2px rgba(27,28,61,0.07); --active-bg:#E9EEF7;
+  --code-bg:#14152E; --code-text:#DDE3EE;
+  --font-display:'Oswald','Arial Narrow',Impact,sans-serif;
+  --font-body:'Arimo',Arial,Helvetica,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--content-bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+body{font-family:var(--font-body);background:var(--content-bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 
 /* The top nav is injected by the shared /nodes/chrome.js (Builder/Tracker + auth). */
 
 /* ── Main ── */
 main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 24px}
-.hero h1{font-size:32px;font-weight:700;letter-spacing:-0.02em}
+.hero h1{font-family:var(--font-display);font-size:44px;font-weight:500;text-transform:uppercase;letter-spacing:-0.015em;line-height:1.05}
 .hero p{margin-top:10px;font-size:16px;color:var(--text-secondary);max-width:72ch}
 .sec-label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary);margin:34px 0 14px}
 
 .card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
-.card h2{font-size:20px;font-weight:600}
+.card h2{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-0.01em}
 .card .desc{margin-top:6px;font-size:14.5px;color:var(--text-secondary);max-width:76ch}
 .card em{font-style:italic;color:var(--text-primary)}
 .use-online{display:inline-block;margin-top:18px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:11px 22px;border-radius:var(--radius)}
@@ -54,7 +60,7 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
 .tk-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;text-decoration:none;color:inherit;display:block;transition:.15s}
 .tk-card:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .tk-card .ico{font-size:26px;margin-bottom:8px}
-.tk-card h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.tk-card h3{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-0.01em;margin-bottom:6px}
 .tk-card p{font-size:13.5px;color:var(--text-secondary);line-height:1.5}
 .tk-card.soon{opacity:.7}
 .tk-soon{font-size:10px;background:#fde68a;color:#92400e;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;font-weight:700}
@@ -62,7 +68,7 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .step{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
 .step .n{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
-.step h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.step h3{font-family:var(--font-display);font-size:19px;font-weight:500;letter-spacing:-0.01em;margin-bottom:6px}
 .step p{font-size:13.5px;color:var(--text-secondary)}
 .step b{color:var(--text-primary);font-weight:600}
 
@@ -85,7 +91,7 @@ footer.site{border-top:1px solid var(--border-color);background:var(--card-bg);p
 .howto-agent ol b{color:var(--text-primary)}
 .howto-agent code.cmd{display:block;margin:6px 0;font-size:12px}
 .howto-agent .copy{padding:6px 10px;font-size:11px}
-@media(max-width:720px){.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.hero h1{font-size:26px}.howto-cols{grid-template-columns:1fr}}
+@media(max-width:720px){.steps{grid-template-columns:1fr}.run-row{grid-template-columns:1fr;gap:6px}.hero h1{font-size:32px}.howto-cols{grid-template-columns:1fr}}
 </style>
 <script defer src="/nodes/chrome.js"></script>
 </head>
