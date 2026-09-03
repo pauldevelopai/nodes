@@ -75,9 +75,16 @@
     "#gc-nav .gc-brand b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-size:22px;font-weight:500;letter-spacing:0.01em;text-transform:uppercase}",
     '#gc-nav .gc-brand span{font-size:10.5px;color:#8FB0D8;font-weight:400}',
     '#gc-nav .gc-links{display:flex;gap:2px;align-items:center;flex-wrap:wrap}',
-    '#gc-nav .gc-links>a{padding:8px 12px;border-radius:4px;font-weight:400;font-size:13.5px;font-family:inherit;color:#C6CFE2;text-decoration:none;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;border-bottom:2px solid transparent}',
-    '#gc-nav .gc-links>a:hover{color:#fff;background:' + NAVY_SOFT + '}',
-    '#gc-nav .gc-links>a.active{font-weight:700;color:#fff;background:' + NAVY_SOFT + ';border-bottom-color:' + ACCENT + '}',
+    // The tab strip. NB the tabs live inside <span id="gc-tabs"> so the fetch
+    // can swap the whole set in one write — which makes them GRANDCHILDREN of
+    // .gc-links, so `.gc-links>a` on its own matches nothing and the tabs fall
+    // back to the HOST PAGE's link styling. That shipped once, on 2026-09-03:
+    // unspaced blue text reading "HomeKnowledgeTrainingGovernance…". Keep
+    // #gc-tabs>a in every one of these three selectors.
+    '#gc-nav #gc-tabs{display:flex;gap:2px;align-items:center;flex-wrap:wrap}',
+    '#gc-nav .gc-links>a,#gc-nav #gc-tabs>a{padding:8px 12px;border-radius:4px;font-weight:400;font-size:13.5px;font-family:inherit;color:#C6CFE2;text-decoration:none;background:transparent;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border-bottom:2px solid transparent}',
+    '#gc-nav .gc-links>a:hover,#gc-nav #gc-tabs>a:hover{color:#fff;background:' + NAVY_SOFT + '}',
+    '#gc-nav .gc-links>a.active,#gc-nav #gc-tabs>a.active{font-weight:700;color:#fff;background:' + NAVY_SOFT + ';border-bottom-color:' + ACCENT + '}',
     '#gc-nav .gc-auth{display:flex;align-items:center;gap:10px;padding-left:10px;margin-left:4px;border-left:1px solid rgba(198,207,226,0.20)}',
     '#gc-nav .gc-email{font-size:13px;color:#E4E9F4;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '#gc-nav .gc-btn{font-weight:400;font-size:13px;font-family:inherit;color:#C6CFE2;background:none;border:1px solid rgba(198,207,226,0.35);border-radius:4px;padding:7px 12px;cursor:pointer;text-decoration:none}',
