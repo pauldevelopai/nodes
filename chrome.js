@@ -7,18 +7,23 @@
  *     <script src="/nodes/chrome.js" defer></script>
  *
  * It injects, identically everywhere:
- *   • the top nav — Home · Builder ▾ (Nodes, Tool Search, Workflow builder,
- *     Monetisation) · AI Policies ▾ (Dashboard, Lawsuits, Regulations,
- *     Connections, Use cases, Ethics, Ethics Policy Builder, Security Audit) ·
- *     Training ▾ (Training, Sources) · auth area
+ *   • the top nav — Home + one tab per pillar, FETCHED from
+ *     GET /api/public/nav (server/config/publicNav.js, which derives it from
+ *     the same pillars.js the React app renders) + the auth area
  *   • the feedback bubble (signed-in only; logged-out → sign-in prompt) →
  *     POST /api/feedback, lands in the admin Feedback page
  *   • the AI-law chat bubble → POST /public/chat
  *
  * It is auth-aware on its own (GET /api/auth/me), so any surface gets the same
- * chrome with zero per-page logic. Changing the menu = edit THIS file + pull
- * the nodes repo on the box; nothing else redeploys. (That's the whole point —
- * before this, every surface carried its own copy of the nav and they drifted.)
+ * chrome with zero per-page logic.
+ *
+ * CHANGING THE MENU: edit the pillars (client/src/pages/beaiready/pillars.js)
+ * and deploy the tracker. This file needs no edit and no box pull — it asks the
+ * API. Until 2026-09-03 it carried its OWN hardcoded copy of the six pillars
+ * plus three dropdown menus the React app had already dropped, which is
+ * exactly the drift this file exists to prevent. FALLBACK_TABS below renders
+ * instantly and is replaced the moment the fetch lands; it is the only copy,
+ * and it is allowed to be a little stale.
  *
  * Opt out of the nav (e.g. the React app, which renders its own) with:
  *     <script>window.GROUNDED_CHROME = { nav: false };</script>
@@ -31,15 +36,10 @@
   var cfg = window.GROUNDED_CHROME || {};
   var SHOW_NAV = cfg.nav !== false; // default on
 
-  var BUILDER = [
-    // Nodes lives in the Tools pillar tab — not duplicated here (matches the SPA nav).
-    { label: 'Tool Search', href: '/tools/' },
-    { label: 'Workflow builder', href: '/builder' },
-    { label: 'Monetisation', href: '/monetisation' },
-  ];
-  // The six BE AI READY pillar tabs, mirroring the Grounded SPA top nav
-  // (client/src/pages/public/PublicLayout.jsx → VISIBLE_PILLARS).
-  var PILLARS = [
+  // Rendered immediately, then replaced by GET /api/public/nav. Keep it in the
+  // same shape the API returns: [{ label, href }].
+  var FALLBACK_TABS = [
+    { label: 'Home', href: '/' },
     { label: 'Knowledge', href: '/pillar/knowledge' },
     { label: 'Training', href: '/pillar/training' },
     { label: 'Governance', href: '/pillar/governance' },
@@ -47,27 +47,17 @@
     { label: 'Tools', href: '/pillar/productivity' },
     { label: 'Strategy', href: '/pillar/strategy' },
   ];
-  var TRACKER = [
-    { label: 'Dashboard', href: '/legal/dashboard' },
-    { label: 'Lawsuits', href: '/legal/lawsuits' },
-    { label: 'Regulations', href: '/legal/regulations' },
-    { label: 'Connections', href: '/legal/explore' },
-    { label: 'Use cases', href: '/legal/use-cases' },
-    { label: 'Ethics', href: '/legal/ethics' },
-    { label: 'Ethics Policy Builder', href: '/legal/ethics-builder' },
-    { label: 'Security Audit', href: '/tool/tool-security-audit' },
-  ];
-  var TRAINING = [
-    { label: 'Training', href: '/training' },
-    { label: 'Sources', href: '/legal/sources' },
-  ];
   var AREAS =['General', 'Nodes', 'Tools', 'Lawsuits', 'Regulations', 'Connections', 'Use cases', 'Sources'];
   var CHAT_SUGGESTIONS = [
     'What cases has OpenAI been sued in?',
     'When does the EU AI Act take effect?',
     'What is the Colorado AI Act?',
   ];
-  var TERRACOTTA = '#c75b39';
+  // The Develop AI palette (developai.co.za), matching the tracker's tokens in
+  // client/src/index.css. Was a terracotta #c75b39 on charcoal.
+  var NAVY = '#1B1C3D';
+  var NAVY_SOFT = '#262747';
+  var ACCENT = '#4673AF';
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function el(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
@@ -76,29 +66,26 @@
   var css = document.createElement('style');
   css.id = 'gc-style';
   css.textContent = [
-    "#gc-nav{display:block;border-bottom:2px solid #c75b39;background:linear-gradient(180deg,#1c1b1a 0%,#232120 100%);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.45;position:sticky;top:0;z-index:9000}",
+    // Mirrors .product-topbar in the tracker's client/src/index.css. Flat navy
+    // (no gradient), a steel-blue rule, Oswald wordmark over Arimo links.
+    "#gc-nav{display:block;border-bottom:2px solid " + ACCENT + ";background:" + NAVY + ";font-family:'Arimo',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;position:sticky;top:0;z-index:9000}",
     '#gc-nav *,#gc-bubbles *,.gc-panel *{box-sizing:border-box}',
     '#gc-nav .gc-bar{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}',
-    '#gc-nav .gc-brand{text-decoration:none;color:#fff;display:flex;flex-direction:column;line-height:1.2}',
-    '#gc-nav .gc-brand b{font-size:20px;font-weight:800;letter-spacing:-0.01em}',
-    '#gc-nav .gc-brand span{font-size:11px;color:#c75b39;font-weight:600}',
-    '#gc-nav .gc-links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}',
-    '#gc-nav .gc-links>a,#gc-nav .gc-dd>button{padding:8px 12px;border-radius:6px;font-weight:500;font-size:14px;font-family:inherit;color:#e7e0d8;text-decoration:none;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:4px}',
-    '#gc-nav .gc-links>a:hover,#gc-nav .gc-dd>button:hover{color:#fff}',
-    '#gc-nav .gc-links>a.active,#gc-nav .gc-dd>button.active{font-weight:600;color:#fff;background:rgba(255,255,255,0.10)}',
-    '#gc-nav .gc-dd{position:relative}',
-    '#gc-nav .gc-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:180px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:9001;display:none;flex-direction:column}',
-    '#gc-nav .gc-menu.open{display:flex}',
-    '#gc-nav .gc-menu a{padding:8px 12px;font-weight:500;font-size:14px;font-family:inherit;color:#1A202C;text-decoration:none;border-radius:6px;white-space:nowrap}',
-    '#gc-nav .gc-menu a:hover{background:#efe9e1}',
-    '#gc-nav .gc-auth{display:flex;align-items:center;gap:10px;padding-left:10px;margin-left:4px;border-left:1px solid rgba(255,255,255,0.15)}',
-    '#gc-nav .gc-email{font-size:13px;color:#f2ede7;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-    '#gc-nav .gc-btn{font-weight:500;font-size:13px;font-family:inherit;color:#e7e0d8;background:none;border:1px solid rgba(231,224,216,0.35);border-radius:6px;padding:7px 12px;cursor:pointer;text-decoration:none}',
-    '#gc-nav .gc-btn:hover{color:#fff;border-color:rgba(231,224,216,0.6)}',
+    '#gc-nav .gc-brand{text-decoration:none;color:#fff;display:flex;flex-direction:column;line-height:1.15}',
+    "#gc-nav .gc-brand b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-size:22px;font-weight:500;letter-spacing:0.01em;text-transform:uppercase}",
+    '#gc-nav .gc-brand span{font-size:10.5px;color:#8FB0D8;font-weight:400}',
+    '#gc-nav .gc-links{display:flex;gap:2px;align-items:center;flex-wrap:wrap}',
+    '#gc-nav .gc-links>a{padding:8px 12px;border-radius:4px;font-weight:400;font-size:13.5px;font-family:inherit;color:#C6CFE2;text-decoration:none;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;border-bottom:2px solid transparent}',
+    '#gc-nav .gc-links>a:hover{color:#fff;background:' + NAVY_SOFT + '}',
+    '#gc-nav .gc-links>a.active{font-weight:700;color:#fff;background:' + NAVY_SOFT + ';border-bottom-color:' + ACCENT + '}',
+    '#gc-nav .gc-auth{display:flex;align-items:center;gap:10px;padding-left:10px;margin-left:4px;border-left:1px solid rgba(198,207,226,0.20)}',
+    '#gc-nav .gc-email{font-size:13px;color:#E4E9F4;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '#gc-nav .gc-btn{font-weight:400;font-size:13px;font-family:inherit;color:#C6CFE2;background:none;border:1px solid rgba(198,207,226,0.35);border-radius:4px;padding:7px 12px;cursor:pointer;text-decoration:none}',
+    '#gc-nav .gc-btn:hover{color:#fff;border-color:rgba(198,207,226,0.6);background:' + NAVY_SOFT + '}',
     // bubbles
     '#gc-bubbles{position:fixed;right:20px;bottom:20px;z-index:99990;display:flex;flex-direction:column;gap:12px;align-items:flex-end}',
-    '#gc-bubbles .gc-bub{width:52px;height:52px;border-radius:50%;background:' + TERRACOTTA + ';color:#fff;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}',
-    '#gc-bubbles .gc-bub:hover{background:#a8543a}',
+    '#gc-bubbles .gc-bub{width:52px;height:52px;border-radius:50%;background:' + ACCENT + ';color:#fff;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}',
+    '#gc-bubbles .gc-bub:hover{background:#3A6099}',
     '#gc-bubbles .gc-bub svg{width:22px;height:22px}',
     '.gc-panel{position:fixed;right:20px;bottom:84px;z-index:99991;width:330px;max-width:calc(100vw - 40px);background:#fff;border:1px solid #E2E8F0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:18px;display:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#1A202C}',
     '.gc-panel.open{display:block}',
@@ -109,12 +96,12 @@
     '.gc-panel textarea{resize:vertical;min-height:78px;margin-bottom:8px}',
     '.gc-types{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}',
     '.gc-types button{padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid #E2E8F0;background:#fff;color:#1A202C}',
-    '.gc-types button.on{background:' + TERRACOTTA + ';color:#fff;border-color:' + TERRACOTTA + '}',
+    '.gc-types button.on{background:' + ACCENT + ';color:#fff;border-color:' + ACCENT + '}',
     '.gc-row{display:flex;gap:6px;align-items:center}',
-    '.gc-send{padding:7px 16px;background:' + TERRACOTTA + ';color:#fff;border:none;border-radius:6px;font-weight:600;font-size:13px;font-family:inherit;cursor:pointer}',
+    '.gc-send{padding:7px 16px;background:' + ACCENT + ';color:#fff;border:none;border-radius:6px;font-weight:600;font-size:13px;font-family:inherit;cursor:pointer}',
     '.gc-send:disabled{opacity:.6;cursor:wait}',
     '.gc-note{font-size:12px;color:#718096;margin-top:8px;line-height:1.5}',
-    '.gc-note a{color:' + TERRACOTTA + ';font-weight:600}',
+    '.gc-note a{color:' + ACCENT + ';font-weight:600}',
     // chat panel specifics
     '#gc-chat-panel{display:none;flex-direction:column;height:440px;max-height:calc(100vh - 120px);padding:0;overflow:hidden}',
     '#gc-chat-panel.open{display:flex}',
@@ -122,7 +109,7 @@
     '#gc-chat-head small{display:block;font-weight:400;font-size:11px;color:#718096}',
     '#gc-chat-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}',
     '#gc-chat-log .gc-m{font-size:13px;line-height:1.5;padding:9px 12px;border-radius:10px;max-width:88%;white-space:pre-wrap}',
-    '#gc-chat-log .gc-m.u{align-self:flex-end;background:' + TERRACOTTA + ';color:#fff}',
+    '#gc-chat-log .gc-m.u{align-self:flex-end;background:' + ACCENT + ';color:#fff}',
     '#gc-chat-log .gc-m.a{align-self:flex-start;background:#F1F5F9;color:#1A202C}',
     '#gc-chat-sugg{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 8px}',
     '#gc-chat-sugg button{font:inherit;font-size:11px;text-align:left;background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:5px 10px;cursor:pointer;color:#475569}',
@@ -136,19 +123,18 @@
   var user = null; // {name,email,role} once /api/auth/me resolves
 
   // ── Nav ────────────────────────────────────────────────────────────────
+  // A tab is active on an exact path match, or when the current path sits under
+  // it (so /pillar/governance stays lit on a sub-page). Home is exact-only,
+  // otherwise every path would light it.
   var path = location.pathname;
-  var sourcesActive = /^\/legal\/sources/.test(path);
-  var trackerActive = /^\/legal(\/|$)/.test(path) && !sourcesActive;
-  var builderActive = /^\/(nodes|tools-hub|tool|tools|open-source|builder|run|monetisation)(\/|$)/.test(path);
-  var trainingActive = /^\/training(\/|$)/.test(path) || sourcesActive;
-  var homeActive = path === '/' ;
-
-  function menuLinks(items) {
-    return items.map(function (i) { return '<a href="' + esc(i.href) + '">' + esc(i.label) + '</a>'; }).join('');
+  function isActive(href) {
+    if (href === '/') return path === '/';
+    return path === href || path.indexOf(href + '/') === 0;
   }
-  function ddHtml(label, items, active, key) {
-    return '<div class="gc-dd" data-nav="' + esc(key) + '"><button type="button" class="' + (active ? 'active' : '') + '">' + esc(label) + ' <span style="font-size:10px">▾</span></button>' +
-      '<div class="gc-menu">' + menuLinks(items) + '</div></div>';
+  function tabLinks(tabs) {
+    return tabs.map(function (t) {
+      return '<a href="' + esc(t.href) + '"' + (isActive(t.href) ? ' class="active"' : '') + '>' + esc(t.label) + '</a>';
+    }).join('');
   }
 
   if (SHOW_NAV && !document.getElementById('gc-nav')) {
@@ -156,46 +142,30 @@
       '<nav id="gc-nav"><div class="gc-bar">' +
       '<a class="gc-brand" href="/"><b>Grounded</b><span>Newsroom-owned AI &middot; by Develop&nbsp;AI</span></a>' +
       '<div class="gc-links">' +
-      '<a href="/" class="' + (homeActive ? 'active' : '') + '">Home</a>' +
-      // The nav is the six pillars only — Builder's items are folded into the Tools
-      // pillar and AI Policies' into Governance (matches the SPA + BeAIReadyPillar).
-      PILLARS.map(function (p) { return '<a href="' + esc(p.href) + '" class="' + (path === p.href ? 'active' : '') + '">' + esc(p.label) + '</a>'; }).join('') +
+      '<span id="gc-tabs">' + tabLinks(FALLBACK_TABS) + '</span>' +
       '<span class="gc-auth" id="gc-auth"></span>' +
       '</div></div></nav>'
     );
     document.body.insertBefore(nav, document.body.firstChild);
 
-    // Dropdown open/close
-    var dds = nav.querySelectorAll('.gc-dd');
-    dds.forEach(function (dd) {
-      var btn = dd.querySelector('button'), menu = dd.querySelector('.gc-menu');
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var wasOpen = menu.classList.contains('open');
-        nav.querySelectorAll('.gc-menu.open').forEach(function (m) { m.classList.remove('open'); });
-        if (!wasOpen) menu.classList.add('open');
-      });
-    });
-    document.addEventListener('click', function () {
-      nav.querySelectorAll('.gc-menu.open').forEach(function (m) { m.classList.remove('open'); });
-    });
-
-    // Refresh the dropdowns from the single source of truth (/api/public/nav,
-    // server/config/publicNav.js). The hardcoded arrays above are the offline
-    // fallback and render instantly; this swaps in the live menu when it loads,
-    // so this front door can't drift from the main site. Only the menu LINKS
-    // are replaced — the toggle listeners live on the buttons, untouched.
+    // Swap in the canonical menu (/api/public/nav → server/config/publicNav.js,
+    // which derives it from pillars.js). FALLBACK_TABS has already painted, so
+    // this is a silent correction, not a load-blocking fetch — and it means
+    // adding or renaming a pillar reaches this front door with no edit here.
     fetch('/api/public/nav', { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (!data) return;
-        ['builder', 'tracker', 'training'].forEach(function (key) {
-          var items = data[key];
-          var menu = nav.querySelector('.gc-dd[data-nav="' + key + '"] .gc-menu');
-          if (menu && Array.isArray(items) && items.length) menu.innerHTML = menuLinks(items);
-        });
+        var tabs = data && data.tabs;
+        var slot = document.getElementById('gc-tabs');
+        if (!slot || !Array.isArray(tabs) || !tabs.length) return;
+        slot.innerHTML = tabLinks(tabs);
+        var brand = data.brand, mark = nav.querySelector('.gc-brand');
+        if (brand && mark) {
+          mark.setAttribute('href', brand.href || '/');
+          mark.innerHTML = '<b>' + esc(brand.name) + '</b><span>' + esc(brand.sub) + '</span>';
+        }
       })
-      .catch(function () { /* keep the fallback menu */ });
+      .catch(function () { /* keep the fallback tabs */ });
   }
 
   function renderAuth() {
@@ -205,7 +175,7 @@
       var first = (user.name || user.email || '').split(' ')[0] || 'you';
       var appHref = user.role === 'admin' ? '/admin' : '/lawsuits';
       slot.innerHTML =
-        '<a class="gc-btn" href="' + appHref + '" style="font-weight:600;color:#fff;background:' + TERRACOTTA + ';border-color:' + TERRACOTTA + '">' + (user.role === 'admin' ? 'Admin' : 'Open app') + '</a>' +
+        '<a class="gc-btn" href="' + appHref + '" style="font-weight:600;color:#fff;background:' + ACCENT + ';border-color:' + ACCENT + '">' + (user.role === 'admin' ? 'Admin' : 'Open app') + '</a>' +
         '<span class="gc-email" title="' + esc(user.email || '') + '">Hi, ' + esc(first) + '</span>' +
         '<button class="gc-btn" id="gc-logout">Sign out</button>';
       var lo = document.getElementById('gc-logout');
