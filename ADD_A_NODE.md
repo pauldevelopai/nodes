@@ -152,3 +152,29 @@ resolve to the tracker, not your Node, under the `/nodes/<slug>/app/` subpath.
 ### If the Node runs old runtime code after a tag bump
 npm served a cached github dep. On the box:
 `rm -rf node_modules/@developai && npm install && pm2 restart <slug>-hosted`.
+
+## 6. Crawlers and AI agents — nothing to add per Node, and one thing not to break
+
+The front door and every hosted Node sit under `grounded.developai.co.za`, so
+they inherit that host's edge rules (2026-09-23, live Caddy block
+`/etc/caddy/sites/ailegal.co.za.caddy`, snapshot in
+`grounded2026/deploy/caddy/ailegal.co.za.caddy`):
+
+- A named list of AI training and bulk-collection crawlers (GPTBot, ClaudeBot,
+  CCBot, Bytespider, PerplexityBot, Amazonbot, meta-externalagent …) gets a 403
+  on every path, `/nodes/*` included, except `/robots.txt`. The same list is in
+  `grounded2026/client/public/robots.txt` with `Disallow: /`.
+- `X-Robots-Tag: noai, noimageai` and `TDM-Reservation: 1` ride on every
+  response, including the proxied Node apps. Search engines are still welcome.
+- HTTP-library User-Agents (`python-requests`, `curl/`, `Go-http-client`, …) are
+  refused only on `/api/public/*`. They are NOT refused on `/nodes/*`: the
+  installer one-liners are `curl … /nodes/<slug>/mac | bash`, and the Node MCP
+  connectors at `/nodes/<slug>/mcp` arrive as `python-httpx`. Keep an MCP path
+  under `/nodes/<slug>/mcp`, never under `/api/public`, or the connector is
+  refused before it reaches the Node.
+- Hosted apps already demand the `tracker_token` cookie (302 to `/login`, or a
+  401 on their JSON routes), so an anonymous scraper gets nothing from them.
+  robots.txt also tells search engines not to crawl `/nodes/*/app`.
+
+There is no per-Node robots.txt: robots.txt is a host-level file and `/nodes/`
+is a path on the Grounded host, so a `robots.txt` in this repo would be ignored.

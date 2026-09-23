@@ -176,6 +176,8 @@ names to routes automatically (`getSetupStatus`→`/api/setup`, `postBrief`→`/
 
 ## Gotchas (these will bite you)
 
+- **The edge refuses AI crawlers on `/nodes/*` too** (2026-09-23). If a hosted Node or connector suddenly gets 403s, check the User-Agent against the block list in `grounded2026/deploy/caddy/ailegal.co.za.caddy` before debugging the Node. See ADD_A_NODE.md §6.
+
 - **Caddy has `admin off`** → `systemctl reload caddy` FAILS silently-ish. Always
   `sudo systemctl restart caddy`. Edit the file at
   `/etc/caddy/sites/ailegal.co.za.caddy` — do **not** paste Caddy directives into
